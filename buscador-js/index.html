@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Estantería Común | Club de lectura</title>
+
+  <!-- CSS de Bootstrap personalizado con Sass -->
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+
+  <!-- ===================================== -->
+  <!-- BARRA DE NAVEGACIÓN                  -->
+  <!-- ===================================== -->
+
+  <nav class="navbar navbar-expand-lg bg-white border-bottom">
+    <div class="container">
+
+      <a class="navbar-brand fw-bold" href="#inicio">
+        Estantería Común
+      </a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#menu-principal"
+        aria-controls="menu-principal"
+        aria-expanded="false"
+        aria-label="Mostrar menú de navegación"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menu-principal">
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item">
+            <a class="nav-link" href="#buscador">
+              Buscar libros
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#lecturas">
+              Mis lecturas
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#propuestas">
+              Proponer lectura
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+  <main id="inicio" class="container py-4">
+
+    <!-- ===================================== -->
+    <!-- ENCABEZADO                           -->
+    <!-- ===================================== -->
+
+    <header class="cabecera-club mb-4">
+
+      <h1>Estantería Común</h1>
+
+      <p class="lead mb-0">
+        Explora libros, organiza tus lecturas
+        y comparte propuestas con el club.
+      </p>
+
+    </header>
+
+    <!-- ===================================== -->
+    <!-- BUSCADOR DE LIBROS                    -->
+    <!-- ===================================== -->
+
+    <section
+      id="buscador"
+      class="seccion-biblioteca"
+      aria-labelledby="titulo-buscador"
+    >
+
+      <h2 id="titulo-buscador">Buscar libros</h2>
+
+      <p>
+        Escribe un título o el nombre de un autor
+        para consultar el catálogo de Open Library.
+      </p>
+
+      <form id="form-busqueda" class="row g-3">
+
+        <div class="col-12 col-md-9">
+
+          <label for="texto-busqueda" class="form-label">
+            Título o autor
+          </label>
+
+          <input
+            type="search"
+            id="texto-busqueda"
+            name="busqueda"
+            class="form-control"
+            placeholder="Ejemplo: Tolkien"
+            required
+          >
+
+        </div>
+
+        <div class="col-12 col-md-3 d-flex align-items-end">
+
+          <button
+            id="btn-buscar"
+            type="submit"
+            class="btn btn-primary w-100"
+          >
+            Buscar
+          </button>
+
+        </div>
+
+      </form>
+
+      <!-- Estado de la petición -->
+
+      <div
+        id="estado-busqueda"
+        class="alert alert-secondary mt-4"
+        role="status"
+        aria-live="polite"
+      >
+        Realiza una búsqueda para mostrar libros.
+      </div>
+
+      <!-- Las tarjetas se crearán mediante JavaScript -->
+
+      <div
+        id="resultados"
+        class="catalogo-grid"
+        aria-label="Resultados de búsqueda"
+      ></div>
+
+    </section>
+
+    <!-- ===================================== -->
+    <!-- LISTA DE LECTURAS                     -->
+    <!-- ===================================== -->
+
+    <section
+      id="lecturas"
+      class="seccion-biblioteca"
+      aria-labelledby="titulo-lecturas"
+    >
+
+      <h2 id="titulo-lecturas">Mi lista de lecturas</h2>
+
+      <p>
+        Organiza los libros utilizando los estados:
+        Pendiente, Leyendo y Leído.
+      </p>
+
+      <div
+        id="aviso-general"
+        class="alert alert-info"
+        role="status"
+        aria-live="polite"
+      >
+        Los libros que agregues aparecerán en esta sección.
+      </div>
+
+      <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Libro</th>
+              <th scope="col">Autores</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+
+          <!-- Contenido generado dinámicamente -->
+
+          <tbody id="tabla-lecturas"></tbody>
+
+        </table>
+
+      </div>
+
+      <p id="lecturas-vacias" class="text-secondary">
+        Todavía no has agregado libros.
+      </p>
+
+    </section>
+
+    <!-- ===================================== -->
+    <!-- FORMULARIO DE PROPUESTAS              -->
+    <!-- Se completará en los commits 6 y 7   -->
+    <!-- ===================================== -->
+
+    <section
+      id="propuestas"
+      class="seccion-biblioteca"
+      aria-labelledby="titulo-propuestas"
+    >
+
+      <h2 id="titulo-propuestas">
+        Proponer un libro
+      </h2>
+
+      <p>
+        Completa la información para sugerir
+        una lectura al club.
+      </p>
+
+      <form id="form-propuesta" class="row g-3">
+
+        <!-- Título -->
+
+        <div class="col-12">
+          <label for="titulo-propuesto" class="form-label">
+            Título del libro
+          </label>
+
+          <input
+            type="text"
+            id="titulo-propuesto"
+            name="titulo"
+            class="form-control"
+            required
+            minlength="2"
+            maxlength="150"
+          >
+        </div>
+
+        <!-- Autores -->
+
+        <div class="col-12">
+          <label for="autor-1" class="form-label">
+            Autor
+          </label>
+
+          <div id="contenedor-autores">
+            <input
+              type="text"
+              id="autor-1"
+              name="autores[]"
+              class="form-control campo-autor"
+              required
+              minlength="2"
+            >
+          </div>
+        </div>
+
+        <!-- Año -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="anio-publicacion" class="form-label">
+            Año de publicación
+          </label>
+
+          <input
+            type="number"
+            id="anio-publicacion"
+            name="anio"
+            class="form-control"
+            min="1"
+            step="1"
+            required
+          >
+
+        </div>
+
+        <!-- Páginas -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="cantidad-paginas" class="form-label">
+            Cantidad de páginas
+          </label>
+
+          <input
+            type="number"
+            id="cantidad-paginas"
+            name="paginas"
+            class="form-control"
+            min="1"
+            step="1"
+            required
+          >
+
+        </div>
+
+        <!-- Género -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="genero" class="form-label">
+            Género literario
+          </label>
+
+          <select
+            id="genero"
+            name="genero"
+            class="form-select"
+            required
+          >
+            <option value="">Selecciona un género</option>
+            <option value="fantasia">Fantasía</option>
+            <option value="ciencia-ficcion">Ciencia ficción</option>
+            <option value="misterio">Misterio</option>
+            <option value="historia">Historia</option>
+            <option value="romance">Romance</option>
+            <option value="otro">Otro</option>
+          </select>
+
+        </div>
+
+        <!-- Correo -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="correo-proponente" class="form-label">
+            Correo electrónico
+          </label>
+
+          <input
+            type="email"
+            id="correo-proponente"
+            name="correo"
+            class="form-control"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+        <!-- Fecha de sesión -->
+
+        <div class="col-12">
+
+          <label for="fecha-sesion" class="form-label">
+            Fecha propuesta para la sesión
+          </label>
+
+          <input
+            type="date"
+            id="fecha-sesion"
+            name="fechaSesion"
+            class="form-control"
+            required
+          >
+
+        </div>
+
+        <!-- Motivo -->
+
+        <div class="col-12">
+
+          <label for="motivo" class="form-label">
+            Motivo de la propuesta
+          </label>
+
+          <textarea
+            id="motivo"
+            name="motivo"
+            class="form-control"
+            rows="4"
+            minlength="10"
+            maxlength="1000"
+            required
+          ></textarea>
+
+        </div>
+
+        <div class="col-12">
+
+          <!-- Se habilitará al implementar el envío -->
+
+          <button
+            id="btn-enviar-propuesta"
+            type="submit"
+            class="btn btn-primary"
+            disabled
+          >
+            Enviar propuesta
+          </button>
+
+          <small class="d-block text-secondary mt-2">
+            El envío se habilitará al completar
+            las validaciones del formulario.
+          </small>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <!-- ===================================== -->
+  <!-- MODAL DE DETALLES                     -->
+  <!-- ===================================== -->
+
+  <div
+    class="modal fade"
+    id="modal-libro"
+    tabindex="-1"
+    aria-labelledby="detalle-titulo"
+    aria-hidden="true"
+  >
+
+    <div class="modal-dialog modal-dialog-centered">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h2
+            class="modal-title fs-5"
+            id="detalle-titulo"
+          >
+            Detalles del libro
+          </h2>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <div class="text-center mb-3">
+
+            <img
+              id="detalle-portada"
+              src="/portada-alternativa.svg"
+              class="img-fluid"
+              alt="Portada del libro seleccionado"
+              width="160"
+              height="220"
+            >
+
+          </div>
+
+          <p>
+            <strong>Autores:</strong>
+            <span id="detalle-autores">-</span>
+          </p>
+
+          <p>
+            <strong>Primera publicación:</strong>
+            <span id="detalle-anio">-</span>
+          </p>
+
+        </div>
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="border-top py-4 mt-4">
+    <div class="container text-center text-secondary">
+      Estantería Común — Programación Web Avanzada
+    </div>
+  </footer>
+
+  <!-- JavaScript ES module -->
+
+  <script type="module" src="./js/main.js"></script>
+
+</body>
+</html>
