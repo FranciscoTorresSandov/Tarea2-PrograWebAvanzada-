@@ -1,18 +1,39 @@
 // =========================================
 // MÓDULO PRINCIPAL
-// Coordina eventos, API y renderizado.
+// Coordina la comunicación entre módulos.
 // =========================================
 
 import "bootstrap";
+
+// Acceso a la API.
 
 import {
   buscarLibros
 } from "./api.js";
 
+// Renderizado del catálogo.
+
 import {
   renderizarResultados,
   mostrarDetalle
 } from "./render.js";
+
+// Estado de la lista de lecturas.
+
+import {
+  obtenerLecturas,
+  agregarLectura,
+  cambiarEstado,
+  eliminarLectura
+} from "./lecturas.js";
+
+// Renderizado de la lista de lecturas.
+
+import {
+  agregarFilaLectura,
+  actualizarEstadoFila,
+  animarEliminacion
+} from "./render-lecturas.js";
 
 // =========================================
 // REFERENCIAS AL DOM
@@ -38,16 +59,35 @@ const resultados = document.querySelector(
   "#resultados"
 );
 
-// Resultados de la búsqueda actual.
-// Se mantienen en memoria.
+const tablaLecturas = document.querySelector(
+  "#tabla-lecturas"
+);
+
+const lecturasVacias = document.querySelector(
+  "#lecturas-vacias"
+);
+
+const avisoGeneral = document.querySelector(
+  "#aviso-general"
+);
+
+// =========================================
+// ESTADO DE LA BÚSQUEDA ACTUAL
+// =========================================
 
 let librosActuales = [];
 
 // =========================================
-// ESTADOS VISUALES
+// FUNCIONES AUXILIARES DE INTERFAZ
 // =========================================
 
-function mostrarEstado(tipo, mensaje) {
+/**
+ * Muestra uno de los estados de búsqueda.
+ */
+function mostrarEstadoBusqueda(
+  tipo,
+  mensaje
+) {
 
   const clases = {
     carga: "alert-info",
@@ -62,21 +102,45 @@ function mostrarEstado(tipo, mensaje) {
   estadoBusqueda.textContent = mensaje;
 }
 
+/**
+ * Muestra notificaciones sobre lecturas.
+ */
+function mostrarAviso(
+  mensaje,
+  tipo = "info"
+) {
+
+  avisoGeneral.className =
+    `alert alert-${tipo}`;
+
+  avisoGeneral.textContent = mensaje;
+}
+
+/**
+ * Actualiza el mensaje de lista vacía.
+ */
+function actualizarListaVacia() {
+
+  const cantidad = obtenerLecturas().length;
+
+  lecturasVacias.hidden = cantidad > 0;
+}
+
 // =========================================
-// ENVÍO DEL FORMULARIO DE BÚSQUEDA
+// BÚSQUEDA DE LIBROS
 // =========================================
 
 formulario.addEventListener(
   "submit",
   async (evento) => {
 
-    // Evitamos la recarga de la página.
     evento.preventDefault();
 
     const texto = campoBusqueda.value.trim();
 
     if (!texto) {
-      mostrarEstado(
+
+      mostrarEstadoBusqueda(
         "error",
         "Debes escribir un título o autor."
       );
@@ -84,10 +148,9 @@ formulario.addEventListener(
       return;
     }
 
-    // Bloqueamos el botón durante la petición.
     botonBuscar.disabled = true;
 
-    mostrarEstado(
+    mostrarEstadoBusqueda(
       "carga",
       "Buscando libros en Open Library..."
     );
@@ -103,7 +166,7 @@ formulario.addEventListener(
 
       if (libros.length === 0) {
 
-        mostrarEstado(
+        mostrarEstadoBusqueda(
           "vacio",
           "No se encontraron libros."
         );
@@ -116,7 +179,7 @@ formulario.addEventListener(
         libros
       );
 
-      mostrarEstado(
+      mostrarEstadoBusqueda(
         "resultados",
         `Se encontraron ${libros.length} resultados.`
       );
@@ -124,19 +187,16 @@ formulario.addEventListener(
     } catch (error) {
 
       console.error(
-        "Error durante la búsqueda:",
+        "Error al consultar Open Library:",
         error
       );
 
-      mostrarEstado(
+      mostrarEstadoBusqueda(
         "error",
-        "No se pudo consultar Open Library. Intenta nuevamente."
+        "No se pudo realizar la búsqueda. Intenta nuevamente."
       );
 
     } finally {
-
-      // Se ejecuta tanto si hubo éxito
-      // como si ocurrió un error.
 
       botonBuscar.disabled = false;
 
@@ -146,11 +206,13 @@ formulario.addEventListener(
 );
 
 // =========================================
-// EVENTOS DE LAS TARJETAS
+// EVENTOS DEL CATÁLOGO
 // =========================================
 
-// Una sola escucha gestiona los botones
-// creados dinámicamente en los resultados.
+// Delegación de eventos en los resultados.
+//
+// No registramos una escucha de clic
+// individual para cada tarjeta.
 
 resultados.addEventListener(
   "click",
@@ -160,7 +222,10 @@ resultados.addEventListener(
       "button[data-accion]"
     );
 
-    if (!boton || !resultados.contains(boton)) {
+    if (
+      !boton ||
+      !resultados.contains(boton)
+    ) {
       return;
     }
 
@@ -174,8 +239,144 @@ resultados.addEventListener(
       return;
     }
 
-    if (boton.dataset.accion === "detalle") {
+    const accion = boton.dataset.accion;
+
+    // Acción: mostrar detalles.
+
+    if (accion === "detalle") {
       mostrarDetalle(libro);
+      return;
+    }
+
+    // Acción: agregar lectura.
+
+    if (accion === "agregar") {
+
+      const agregado = agregarLectura(libro);
+
+      if (!agregado) {
+
+        mostrarAviso(
+          "Este libro ya existe en tu lista.",
+          "warning"
+        );
+
+        return;
+      }
+
+      // Actualizamos solamente la nueva fila.
+
+      const lecturaAgregada = {
+        ...libro,
+        estado: "Pendiente"
+      };
+
+      agregarFilaLectura(
+        tablaLecturas,
+        lecturaAgregada
+      );
+
+      actualizarListaVacia();
+
+      mostrarAviso(
+        `"${libro.titulo}" se agregó correctamente.`,
+        "success"
+      );
+
+    }
+
+  }
+);
+
+// =========================================
+// EVENTOS DE LA LISTA DE LECTURAS
+// =========================================
+
+// Existe UNA sola escucha de clic en tbody.
+// Los botones se identifican mediante
+// data-accion y data-id.
+
+tablaLecturas.addEventListener(
+  "click",
+  (evento) => {
+
+    const boton = evento.target.closest(
+      "button[data-accion]"
+    );
+
+    if (
+      !boton ||
+      !tablaLecturas.contains(boton)
+    ) {
+      return;
+    }
+
+    const fila = boton.closest(
+      "tr[data-id]"
+    );
+
+    if (!fila || !tablaLecturas.contains(fila)) {
+      return;
+    }
+
+    // Comprobamos que el botón corresponde
+    // realmente a la fila sobre la que actuamos.
+
+    const id = fila.dataset.id;
+
+    if (boton.dataset.id !== id) {
+      return;
+    }
+
+    const accion = boton.dataset.accion;
+
+    // Acción: cambiar estado.
+
+    if (accion === "estado") {
+
+      const nuevoEstado = cambiarEstado(id);
+
+      if (!nuevoEstado) {
+        return;
+      }
+
+      actualizarEstadoFila(
+        fila,
+        nuevoEstado
+      );
+
+      mostrarAviso(
+        `Estado actualizado a: ${nuevoEstado}.`,
+        "info"
+      );
+
+      return;
+    }
+
+    // Acción: quitar una lectura.
+
+    if (accion === "quitar") {
+
+      // Primero ejecutamos la transición.
+      // Al finalizar, retiramos el registro
+      // del estado en memoria.
+
+      animarEliminacion(
+        fila,
+        () => {
+
+          eliminarLectura(id);
+
+          actualizarListaVacia();
+
+          mostrarAviso(
+            "El libro se eliminó de la lista.",
+            "success"
+          );
+
+        }
+      );
+
     }
 
   }
@@ -192,11 +393,21 @@ const portadaModal = document.querySelector(
 portadaModal.addEventListener(
   "error",
   () => {
+
     if (!portadaModal.src.endsWith(
       "/portada-alternativa.svg"
     )) {
+
       portadaModal.src =
         "/portada-alternativa.svg";
+
     }
+
   }
 );
+
+// =========================================
+// INICIALIZACIÓN
+// =========================================
+
+actualizarListaVacia();

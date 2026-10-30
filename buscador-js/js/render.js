@@ -1,3 +1,4 @@
+
 // =========================================
 // MÓDULO: RENDERIZADO
 // Responsabilidad:
@@ -42,7 +43,6 @@ function crearTarjetaLibro(libro) {
   );
 
   // Imagen del libro.
-
   const imagen = crearElemento(
     "img",
     "card-img-top tarjeta-portada"
@@ -54,7 +54,6 @@ function crearTarjetaLibro(libro) {
 
   // Si la portada remota falla,
   // utilizamos nuestra imagen local.
-
   imagen.addEventListener(
     "error",
     () => {
@@ -64,7 +63,6 @@ function crearTarjetaLibro(libro) {
   );
 
   // Contenedor de contenido.
-
   const cuerpo = crearElemento(
     "div",
     "card-body"
@@ -91,14 +89,14 @@ function crearTarjetaLibro(libro) {
   );
 
   // Contenedor de acciones.
-
   const acciones = crearElemento(
     "div",
     "tarjeta-acciones"
   );
 
-  // En este commit únicamente abrimos detalles.
-  // El botón para agregar libros llegará en el 05.
+  // =========================================
+  // BOTÓN: VER DETALLES
+  // =========================================
 
   const botonDetalle = crearElemento(
     "button",
@@ -121,8 +119,31 @@ function crearTarjetaLibro(libro) {
     "#modal-libro"
   );
 
-  acciones.append(botonDetalle);
+  // =========================================
+  // BOTÓN: AGREGAR A LECTURAS
+  // =========================================
 
+  const botonAgregar = crearElemento(
+    "button",
+    "btn btn-primary btn-sm",
+    "Agregar a lecturas"
+  );
+
+  botonAgregar.type = "button";
+
+  // Identifica la acción que debe ejecutarse.
+  botonAgregar.dataset.accion = "agregar";
+
+  // Identifica el libro seleccionado.
+  botonAgregar.dataset.id = libro.id;
+
+  // Incorporamos ambos botones a la tarjeta.
+  acciones.append(
+    botonDetalle,
+    botonAgregar
+  );
+
+  // Incorporamos los elementos al cuerpo.
   cuerpo.append(
     titulo,
     autores,
@@ -130,6 +151,7 @@ function crearTarjetaLibro(libro) {
     acciones
   );
 
+  // Incorporamos imagen y contenido.
   tarjeta.append(
     imagen,
     cuerpo
@@ -141,6 +163,9 @@ function crearTarjetaLibro(libro) {
 /**
  * Renderiza únicamente los resultados
  * de la búsqueda actual.
+ *
+ * @param {HTMLElement} contenedor
+ * @param {Array} libros
  */
 export function renderizarResultados(
   contenedor,
@@ -155,7 +180,10 @@ export function renderizarResultados(
 }
 
 /**
- * Actualiza el contenido del modal.
+ * Actualiza el contenido del modal
+ * con la información del libro seleccionado.
+ *
+ * @param {Object} libro
  */
 export function mostrarDetalle(libro) {
 
