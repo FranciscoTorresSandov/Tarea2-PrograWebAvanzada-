@@ -1,0 +1,14 @@
+// Mixin reutilizable para superficies del proyecto.
+//
+// $radio permite personalizar el radio de cada
+// componente que incluya este mixin.
+
+@mixin superficie-lectura($radio: 1rem) {
+  background-color: #ffffff;
+
+  border: 1px solid rgba(32, 91, 99, 0.12);
+  border-radius: $radio;
+
+  box-shadow:
+    0 8px 24px rgba(32, 91, 99, 0.08);
+}

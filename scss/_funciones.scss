@@ -1,0 +1,8 @@
+// Convierte una cantidad de píxeles a rem.
+//
+// La referencia utilizada es 16px = 1rem,
+// asumiendo un tamaño de fuente raíz de 16px.
+
+@function a-rem($pixeles) {
+  @return math.div($pixeles, 16) * 1rem;
+}

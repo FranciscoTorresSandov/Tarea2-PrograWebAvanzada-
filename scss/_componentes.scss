@@ -1,0 +1,106 @@
+// Variables CSS disponibles en tiempo de ejecución.
+
+:root {
+  --color-superficie: #ffffff;
+  --color-portada: #e6efed;
+  --color-resalte: #d4ece4;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+// Cabecera principal del club.
+
+.cabecera-club {
+  background: linear-gradient(
+    120deg,
+    #e4f3ee,
+    #f7faf9
+  );
+
+  border-radius: 1rem;
+  padding: a-rem(24);
+
+  h1 {
+    color: $primary;
+    font-weight: 700;
+  }
+
+  p {
+    max-width: 65ch;
+  }
+}
+
+// Componente propio que reutiliza el mixin.
+
+.seccion-biblioteca {
+  @include superficie-lectura(1rem);
+
+  padding: a-rem(20);
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: a-rem(24);
+    margin-bottom: 1rem;
+  }
+}
+
+// CSS Grid con enfoque mobile-first.
+// Primero una columna para pantallas pequeñas.
+
+.catalogo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+// Tarjetas del catálogo.
+
+.tarjeta-libro {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .tarjeta-portada {
+    width: 100%;
+    height: 14rem;
+    object-fit: contain;
+    background-color: var(--color-portada);
+    padding: 0.75rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tarjeta-acciones {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+// Ajustes para pantallas medianas.
+
+@media (min-width: 48rem) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+// Ajustes para pantallas grandes.
+
+@media (min-width: 75rem) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}

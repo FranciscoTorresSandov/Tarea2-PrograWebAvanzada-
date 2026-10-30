@@ -1,0 +1,19 @@
+{
+  "name": "estanteria-comun-buscador",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:css": "sass --load-path=node_modules ../scss/main.scss css/main.css --no-source-map",
+    "watch:css": "sass --watch --load-path=node_modules ../scss/main.scss:css/main.css --no-source-map",
+    "build": "npm run build:css && vite build"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "sass": "^1.107.0",
+    "vite": "^8.3.5"
+  }
+}

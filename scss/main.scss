@@ -1,0 +1,15 @@
+// Módulo matemático de Sass.
+@use "sass:math";
+
+// 1. Configuración de variables de origen.
+@import "variables";
+
+// 2. Bootstrap instalado localmente mediante npm.
+@import "bootstrap/scss/bootstrap";
+
+// 3. Recursos propios reutilizables.
+@import "mixins";
+@import "funciones";
+
+// 4. Componentes específicos de la aplicación.
+@import "componentes";
