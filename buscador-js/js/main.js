@@ -35,6 +35,12 @@ import {
   animarEliminacion
 } from "./render-lecturas.js";
 
+// Formulario de propuestas.
+
+import {
+  iniciarFormularioPropuesta
+} from "./formulario.js";
+
 // =========================================
 // REFERENCIAS AL DOM
 // =========================================
@@ -277,6 +283,9 @@ resultados.addEventListener(
       );
 
       actualizarListaVacia();
+
+      // Inicializar validaciones del formulario.
+      iniciarFormularioPropuesta();
 
       mostrarAviso(
         `"${libro.titulo}" se agregó correctamente.`,

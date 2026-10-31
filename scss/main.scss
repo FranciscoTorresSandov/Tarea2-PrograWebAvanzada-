@@ -1,15 +1,80 @@
-// Módulo matemático de Sass.
-@use "sass:math";
+// =========================================
+// ESTANTERÍA COMÚN
+// HOJA PRINCIPAL SASS
+// =========================================
 
-// 1. Configuración de variables de origen.
+// 1. Funciones de Bootstrap.
+// Necesarias antes de personalizar variables.
+
+@import "../node_modules/bootstrap/scss/functions";
+
+// 2. Variables propias y personalización
+// de las variables de origen de Bootstrap.
+
 @import "variables";
 
-// 2. Bootstrap instalado localmente mediante npm.
-@import "bootstrap/scss/bootstrap";
+// 3. Configuración obligatoria del framework.
 
-// 3. Recursos propios reutilizables.
+@import "../node_modules/bootstrap/scss/variables";
+
+@import "../node_modules/bootstrap/scss/variables-dark";
+
+@import "../node_modules/bootstrap/scss/maps";
+
+@import "../node_modules/bootstrap/scss/mixins";
+
+@import "../node_modules/bootstrap/scss/utilities";
+
+// 4. Estructura básica.
+
+@import "../node_modules/bootstrap/scss/root";
+
+@import "../node_modules/bootstrap/scss/reboot";
+
+@import "../node_modules/bootstrap/scss/type";
+
+@import "../node_modules/bootstrap/scss/images";
+
+// 5. Sistema de distribución.
+
+@import "../node_modules/bootstrap/scss/containers";
+
+@import "../node_modules/bootstrap/scss/grid";
+
+// 6. Componentes utilizados por la aplicación.
+
+@import "../node_modules/bootstrap/scss/tables";
+
+@import "../node_modules/bootstrap/scss/forms";
+
+@import "../node_modules/bootstrap/scss/buttons";
+
+@import "../node_modules/bootstrap/scss/transitions";
+
+@import "../node_modules/bootstrap/scss/nav";
+
+@import "../node_modules/bootstrap/scss/navbar";
+
+@import "../node_modules/bootstrap/scss/card";
+
+@import "../node_modules/bootstrap/scss/badge";
+
+@import "../node_modules/bootstrap/scss/alert";
+
+@import "../node_modules/bootstrap/scss/close";
+
+@import "../node_modules/bootstrap/scss/modal";
+
+// 7. Helpers y clases utilitarias.
+
+@import "../node_modules/bootstrap/scss/helpers";
+
+@import "../node_modules/bootstrap/scss/utilities/api";
+
+// 8. Recursos propios del proyecto.
+
 @import "mixins";
+
 @import "funciones";
 
-// 4. Componentes específicos de la aplicación.
 @import "componentes";
