@@ -114,3 +114,68 @@
       repeat(3, minmax(0, 1fr));
   }
 }
+
+/* =========================================
+   COMPONENTES REUTILIZABLES
+   ========================================= */
+
+.btn-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #205b63;
+  border-radius: 0.5rem;
+
+  background-color: #205b63;
+  color: white;
+
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.btn-accion:hover {
+  background-color: #17464d;
+  transform: translateY(-2px);
+}
+
+.libro-card.seleccionada {
+  border-color: #205b63;
+  outline: 2px solid #205b63;
+  outline-offset: 2px;
+}
+
+.detalle-seleccionado {
+  border-left: 4px solid #205b63;
+  background-color: #edf6f3;
+
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.detalle-seleccionado h3 {
+  color: #205b63;
+}
+
+.mensaje-vacio {
+  color: #657c84;
+  font-style: italic;
+}
+
+.panel-club + .panel-club {
+  margin-top: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-accion {
+    transition: none;
+  }
+
+  .btn-accion:hover {
+    transform: none;
+  }
+}

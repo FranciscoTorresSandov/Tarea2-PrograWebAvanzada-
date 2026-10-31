@@ -104,3 +104,65 @@ body {
       repeat(3, minmax(0, 1fr));
   }
 }
+
+// =========================================
+// ANIMACIONES DE LA LISTA DE LECTURAS
+// =========================================
+
+// Estado visual normal de las filas.
+
+.fila-lectura {
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+
+// Estado inicial de la animación de entrada.
+
+.fila-lectura.entrando {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+// Estado de salida.
+
+.fila-lectura.saliendo {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+// Animación al cambiar el estado.
+
+@keyframes resaltar-lectura {
+
+  0% {
+    background-color: var(--color-resalte);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+
+}
+
+.fila-lectura.actualizada {
+  animation: resaltar-lectura 550ms ease;
+}
+
+// Accesibilidad: reducir movimiento cuando
+// el usuario lo haya solicitado.
+
+@media (prefers-reduced-motion: reduce) {
+
+  .fila-lectura {
+    transition: none;
+  }
+
+  .fila-lectura.actualizada {
+    animation: none;
+  }
+
+}

@@ -1,127 +1,122 @@
 // =========================================
 // COMPONENTE PRINCIPAL — APP
+//
+// Responsabilidades:
+// - Coordinar los componentes.
+// - Mantener la selección actual.
+// - Proporcionar datos y callbacks.
 // =========================================
+
+import { useState } from "react";
 
 import {
   librosIniciales,
   miembrosIniciales
 } from "./data/datosIniciales.js";
 
+import Cabecera from "./components/layout/Cabecera.jsx";
+
+import Panel from "./components/layout/Panel.jsx";
+
+import ListaLibros from "./components/libros/ListaLibros.jsx";
+
 import "./App.css";
 
-/**
- * Devuelve el nombre de un miembro a partir
- * de su identificador.
- */
-function obtenerNombreMiembro(miembroId) {
-  const miembro = miembrosIniciales.find(
-    item => item.id === miembroId
+function App() {
+
+  // Estado que identifica al libro seleccionado.
+  //
+  // null significa que no existe una selección.
+
+  const [
+    seleccionadoId,
+    setSeleccionadoId
+  ] = useState(null);
+
+  /**
+   * Selecciona un libro.
+   *
+   * Si presionamos el libro seleccionado
+   * nuevamente, eliminamos la selección.
+   */
+  function seleccionarLibro(id) {
+    setSeleccionadoId(
+      anterior => anterior === id ? null : id
+    );
+  }
+
+  /**
+   * Derivamos el libro seleccionado.
+   *
+   * No necesitamos guardar el objeto completo
+   * en otro estado.
+   */
+  const libroSeleccionado = librosIniciales.find(
+    libro => libro.id === seleccionadoId
   );
 
-  return miembro?.nombre ?? "Miembro desconocido";
-}
-
-/**
- * Selecciona la clase visual correspondiente
- * a cada estado de lectura.
- */
-function obtenerClaseEstado(estado) {
-  const clases = {
-    Pendiente: "estado-pendiente",
-    Leyendo: "estado-leyendo",
-    "Leído": "estado-leido"
-  };
-
-  return clases[estado] ?? "";
-}
-
-/**
- * Componente principal de la aplicación.
- */
-function App() {
   return (
     <div className="aplicacion">
 
-      <header className="encabezado-react">
-
-        <div className="contenedor">
-
-          <p className="etiqueta">
-            Club de lectura comunitario
-          </p>
-
-          <h1>Estantería Común</h1>
-
-          <p>
-            Tablero interno de lecturas
-            desarrollado con React.
-          </p>
-
-        </div>
-
-      </header>
+      <Cabecera />
 
       <main className="contenedor contenido-principal">
 
-        <section
-          className="panel-club"
-          aria-labelledby="titulo-libros"
+        <Panel
+          titulo="Lecturas del club"
+          idTitulo="titulo-lecturas"
         >
-
-          <h2 id="titulo-libros">
-            Lecturas del club
-          </h2>
 
           <p>
             Consulta los libros registrados,
             su estado y el miembro que los propuso.
           </p>
 
-          <div className="lista-libros-react">
+          <ListaLibros
+            libros={librosIniciales}
+            miembros={miembrosIniciales}
+            seleccionadoId={seleccionadoId}
+            onSeleccionar={seleccionarLibro}
+          />
 
-            {librosIniciales.map(libro => (
+        </Panel>
 
-              <article
-                key={libro.id}
-                className="libro-card"
-              >
+        <Panel
+          titulo="Selección actual"
+          idTitulo="titulo-seleccion"
+        >
 
-                <h3>{libro.titulo}</h3>
+          {libroSeleccionado ? (
 
-                <p>
-                  <strong>Autor:</strong>{" "}
-                  {libro.autor}
-                </p>
+            <div className="detalle-seleccionado">
 
-                <p>
-                  <strong>Año:</strong>{" "}
-                  {libro.anio}
-                </p>
+              <p>
+                Has seleccionado:
+              </p>
 
-                <p>
-                  <strong>Propuesto por:</strong>{" "}
-                  {obtenerNombreMiembro(
-                    libro.miembroId
-                  )}
-                </p>
+              <h3>
+                {libroSeleccionado.titulo}
+              </h3>
 
-                <span
-                  className={
-                    `etiqueta-estado ${
-                      obtenerClaseEstado(libro.estado)
-                    }`
-                  }
-                >
-                  {libro.estado}
-                </span>
+              <p>
+                Estado actual:{" "}
+                <strong>
+                  {libroSeleccionado.estado}
+                </strong>
+              </p>
 
-              </article>
+            </div>
 
-            ))}
+          ) : (
 
-          </div>
+            <p className="mensaje-vacio">
+              Selecciona un libro para consultar
+              su información en este panel.
+            </p>
 
-        </section>
+          )}
+
+        </Panel>
 
       </main>
 
