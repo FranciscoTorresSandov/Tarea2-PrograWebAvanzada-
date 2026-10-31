@@ -1,0 +1,116 @@
+/* =========================================
+   ESTILOS DEL TABLERO REACT
+   ========================================= */
+
+.aplicacion {
+  min-height: 100vh;
+}
+
+.contenedor {
+  width: min(100% - 2rem, 1100px);
+  margin-inline: auto;
+}
+
+.encabezado-react {
+  background: linear-gradient(
+    120deg,
+    #205b63,
+    #347e78
+  );
+
+  color: white;
+  padding: 3rem 0;
+}
+
+.encabezado-react h1 {
+  margin: 0.5rem 0;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.encabezado-react p {
+  line-height: 1.6;
+}
+
+.etiqueta {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.contenido-principal {
+  padding-block: 2rem;
+}
+
+.panel-club {
+  background-color: white;
+  border: 1px solid #d7e5e2;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 5%);
+}
+
+.panel-club h2 {
+  margin-top: 0;
+  color: #205b63;
+}
+
+.lista-libros-react {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.libro-card {
+  border: 1px solid #d7e5e2;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background-color: #ffffff;
+}
+
+.libro-card h3 {
+  margin-top: 0;
+  color: #205b63;
+}
+
+.libro-card p {
+  line-height: 1.5;
+}
+
+.etiqueta-estado {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.estado-pendiente {
+  background-color: #fff0c2;
+  color: #765400;
+}
+
+.estado-leyendo {
+  background-color: #d9edff;
+  color: #174d82;
+}
+
+.estado-leido {
+  background-color: #daf2df;
+  color: #246539;
+}
+
+@media (min-width: 700px) {
+  .lista-libros-react {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1050px) {
+  .lista-libros-react {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
