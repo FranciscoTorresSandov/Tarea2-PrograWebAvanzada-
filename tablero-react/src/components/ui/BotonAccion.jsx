@@ -1,22 +1,27 @@
 // =========================================
 // COMPONENTE: BOTÓN DE ACCIÓN
-// Responsabilidad:
-// Presentar un botón reutilizable y ejecutar
-// una función recibida del componente padre.
+//
+// Recibe una función mediante props.
+// Permite reutilizar estilos y comportamiento.
 // =========================================
 
 function BotonAccion({
   onAccion,
   children,
-  presionado = false
+  variante = "principal",
+  presionado,
+  deshabilitado = false,
+  ariaLabel
 }) {
 
   return (
     <button
       type="button"
-      className="btn-accion"
+      className={`btn-accion btn-accion--${variante}`}
       onClick={onAccion}
       aria-pressed={presionado}
+      aria-label={ariaLabel}
+      disabled={deshabilitado}
     >
       {children}
     </button>

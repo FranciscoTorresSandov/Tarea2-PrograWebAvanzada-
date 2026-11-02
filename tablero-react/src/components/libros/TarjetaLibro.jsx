@@ -1,14 +1,13 @@
 // =========================================
 // COMPONENTE: TARJETA DE LIBRO
+//
 // Responsabilidad:
-// Mostrar los datos de una lectura individual.
+// Mostrar un libro y comunicar acciones
+// mediante callbacks recibidos del padre.
 // =========================================
 
 import BotonAccion from "../ui/BotonAccion.jsx";
 
-/**
- * Devuelve la clase correspondiente al estado.
- */
 function obtenerClaseEstado(estado) {
   const clases = {
     Pendiente: "estado-pendiente",
@@ -19,15 +18,12 @@ function obtenerClaseEstado(estado) {
   return clases[estado] ?? "";
 }
 
-/**
- * Presenta la información del libro.
- *
- * Recibe datos y una función desde el padre.
- */
 function TarjetaLibro({
   libro,
   propuestoPor,
   onSeleccionar,
+  onCambiarEstado,
+  onQuitar,
   estaSeleccionado
 }) {
 
@@ -69,14 +65,34 @@ function TarjetaLibro({
         </span>
       </p>
 
-      <BotonAccion
-        onAccion={() => onSeleccionar(libro.id)}
-        presionado={estaSeleccionado}
-      >
-        {estaSeleccionado
-          ? "Ocultar selección"
-          : "Seleccionar libro"}
-      </BotonAccion>
+      <div className="botones-libro">
+
+        <BotonAccion
+          variante="secundario"
+          onAccion={() => onSeleccionar(libro.id)}
+          presionado={estaSeleccionado}
+        >
+          {estaSeleccionado
+            ? "Ocultar selección"
+            : "Seleccionar"}
+        </BotonAccion>
+
+        <BotonAccion
+          onAccion={() => onCambiarEstado(libro.id)}
+          ariaLabel={`Cambiar estado de ${libro.titulo}`}
+        >
+          Cambiar estado
+        </BotonAccion>
+
+        <BotonAccion
+          variante="peligro"
+          onAccion={() => onQuitar(libro.id)}
+          ariaLabel={`Quitar ${libro.titulo}`}
+        >
+          Quitar
+        </BotonAccion>
+
+      </div>
 
     </article>
   );

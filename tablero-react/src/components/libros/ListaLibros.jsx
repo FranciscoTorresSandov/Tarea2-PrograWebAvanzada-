@@ -1,21 +1,17 @@
 // =========================================
 // COMPONENTE: LISTA DE LIBROS
-// Responsabilidades:
-// - Recorrer el arreglo de libros.
-// - Resolver el miembro que propuso cada uno.
-// - Renderizar tarjetas con keys estables.
+//
+// Responsabilidad:
+// Renderizar la colección recibida
+// mediante tarjetas y keys estables.
 // =========================================
 
 import TarjetaLibro from "./TarjetaLibro.jsx";
 
-/**
- * Busca el nombre del miembro proponente.
- */
 function obtenerNombreMiembro(
   miembros,
   miembroId
 ) {
-
   const miembro = miembros.find(
     item => item.id === miembroId
   );
@@ -23,20 +19,20 @@ function obtenerNombreMiembro(
   return miembro?.nombre ?? "Miembro desconocido";
 }
 
-/**
- * Renderiza los libros recibidos.
- */
 function ListaLibros({
   libros,
   miembros,
   seleccionadoId,
-  onSeleccionar
+  onSeleccionar,
+  onCambiarEstado,
+  onQuitar,
+  mensajeVacio = "Todavía no hay libros registrados."
 }) {
 
   if (libros.length === 0) {
     return (
-      <p className="mensaje-vacio">
-        Todavía no hay libros registrados.
+      <p className="mensaje-vacio" role="status">
+        {mensajeVacio}
       </p>
     );
   }
@@ -55,10 +51,13 @@ function ListaLibros({
               libro.miembroId
             )
           }
-          onSeleccionar={onSeleccionar}
+          seleccionadoId={seleccionadoId}
           estaSeleccionado={
             seleccionadoId === libro.id
           }
+          onSeleccionar={onSeleccionar}
+          onCambiarEstado={onCambiarEstado}
+          onQuitar={onQuitar}
         />
 
       ))}

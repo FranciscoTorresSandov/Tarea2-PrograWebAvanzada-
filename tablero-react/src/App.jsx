@@ -2,9 +2,9 @@
 // COMPONENTE PRINCIPAL — APP
 //
 // Responsabilidades:
-// - Coordinar los componentes.
+// - Mantener la lista de libros en estado.
 // - Mantener la selección actual.
-// - Proporcionar datos y callbacks.
+// - Coordinar acciones entre componentes.
 // =========================================
 
 import { useState } from "react";
@@ -13,6 +13,11 @@ import {
   librosIniciales,
   miembrosIniciales
 } from "./data/datosIniciales.js";
+
+import {
+  actualizarEstadoLectura,
+  quitarLibro
+} from "./utils/lecturas.js";
 
 import Cabecera from "./components/layout/Cabecera.jsx";
 
@@ -24,9 +29,14 @@ import "./App.css";
 
 function App() {
 
-  // Estado que identifica al libro seleccionado.
-  //
-  // null significa que no existe una selección.
+  // El arreglo inicial se copia.
+  // No modificaremos sus objetos originales.
+
+  const [libros, setLibros] = useState(
+    () => librosIniciales.map(libro => ({
+      ...libro
+    }))
+  );
 
   const [
     seleccionadoId,
@@ -34,10 +44,7 @@ function App() {
   ] = useState(null);
 
   /**
-   * Selecciona un libro.
-   *
-   * Si presionamos el libro seleccionado
-   * nuevamente, eliminamos la selección.
+   * Selecciona o deselecciona un libro.
    */
   function seleccionarLibro(id) {
     setSeleccionadoId(
@@ -46,12 +53,40 @@ function App() {
   }
 
   /**
-   * Derivamos el libro seleccionado.
+   * Cambia el estado del libro solicitado.
    *
-   * No necesitamos guardar el objeto completo
-   * en otro estado.
+   * La actualización funcional utiliza
+   * el estado anterior más reciente.
    */
-  const libroSeleccionado = librosIniciales.find(
+  function cambiarEstadoLibro(id) {
+    setLibros(
+      anteriores => actualizarEstadoLectura(
+        anteriores,
+        id
+      )
+    );
+  }
+
+  /**
+   * Elimina un libro de forma inmutable.
+   */
+  function eliminarLibro(id) {
+    setLibros(
+      anteriores => quitarLibro(anteriores, id)
+    );
+
+    // Si eliminamos el libro seleccionado,
+    // también limpiamos su selección.
+
+    setSeleccionadoId(
+      anterior => anterior === id ? null : anterior
+    );
+  }
+
+  // Dato derivado del estado actual.
+  // No se guarda en otro useState.
+
+  const libroSeleccionado = libros.find(
     libro => libro.id === seleccionadoId
   );
 
@@ -69,14 +104,16 @@ function App() {
 
           <p>
             Consulta los libros registrados,
-            su estado y el miembro que los propuso.
+            cambia su estado o elimínalos.
           </p>
 
           <ListaLibros
-            libros={librosIniciales}
+            libros={libros}
             miembros={miembrosIniciales}
             seleccionadoId={seleccionadoId}
             onSeleccionar={seleccionarLibro}
+            onCambiarEstado={cambiarEstadoLibro}
+            onQuitar={eliminarLibro}
           />
 
         </Panel>
@@ -90,13 +127,9 @@ function App() {
 
             <div className="detalle-seleccionado">
 
-              <p>
-                Has seleccionado:
-              </p>
+              <p>Has seleccionado:</p>
 
-              <h3>
-                {libroSeleccionado.titulo}
-              </h3>
+              <h3>{libroSeleccionado.titulo}</h3>
 
               <p>
                 Estado actual:{" "}

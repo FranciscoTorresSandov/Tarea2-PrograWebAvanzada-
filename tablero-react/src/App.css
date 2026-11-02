@@ -1,5 +1,5 @@
 /* =========================================
-   ESTILOS DEL TABLERO REACT
+   ESTILOS GENERALES DEL TABLERO
    ========================================= */
 
 .aplicacion {
@@ -55,6 +55,10 @@
   color: #205b63;
 }
 
+.panel-club + .panel-club {
+  margin-top: 1.5rem;
+}
+
 .lista-libros-react {
   display: grid;
   grid-template-columns: 1fr;
@@ -63,6 +67,8 @@
 }
 
 .libro-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #d7e5e2;
   border-radius: 0.75rem;
   padding: 1.25rem;
@@ -76,6 +82,12 @@
 
 .libro-card p {
   line-height: 1.5;
+}
+
+.libro-card.seleccionada {
+  border-color: #205b63;
+  outline: 2px solid #205b63;
+  outline-offset: 2px;
 }
 
 .etiqueta-estado {
@@ -101,23 +113,13 @@
   color: #246539;
 }
 
-@media (min-width: 700px) {
-  .lista-libros-react {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
+.botones-libro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
 }
-
-@media (min-width: 1050px) {
-  .lista-libros-react {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* =========================================
-   COMPONENTES REUTILIZABLES
-   ========================================= */
 
 .btn-accion {
   display: inline-flex;
@@ -143,16 +145,32 @@
   transform: translateY(-2px);
 }
 
-.libro-card.seleccionada {
-  border-color: #205b63;
-  outline: 2px solid #205b63;
-  outline-offset: 2px;
+.btn-accion--secundario {
+  background-color: white;
+  color: #205b63;
+}
+
+.btn-accion--secundario:hover {
+  background-color: #e1f0ea;
+}
+
+.btn-accion--peligro {
+  background-color: #a12a3b;
+  border-color: #a12a3b;
+}
+
+.btn-accion--peligro:hover {
+  background-color: #812232;
+}
+
+.btn-accion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .detalle-seleccionado {
   border-left: 4px solid #205b63;
   background-color: #edf6f3;
-
   padding: 1rem;
   border-radius: 0.5rem;
 }
@@ -166,8 +184,18 @@
   font-style: italic;
 }
 
-.panel-club + .panel-club {
-  margin-top: 1.5rem;
+@media (min-width: 700px) {
+  .lista-libros-react {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1050px) {
+  .lista-libros-react {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

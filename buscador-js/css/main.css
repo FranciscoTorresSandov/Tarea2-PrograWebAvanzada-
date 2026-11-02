@@ -9712,3 +9712,39 @@ body {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+.fila-lectura {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.fila-lectura.entrando {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.fila-lectura.saliendo {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+@keyframes resaltar-lectura {
+  0% {
+    background-color: var(--color-resalte);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.fila-lectura.actualizada {
+  animation: resaltar-lectura 550ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fila-lectura {
+    transition: none;
+  }
+  .fila-lectura.actualizada {
+    animation: none;
+  }
+}
