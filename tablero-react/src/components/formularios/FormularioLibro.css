@@ -1,0 +1,82 @@
+/* =========================================
+   FORMULARIO CONTROLADO DE REACT
+   ========================================= */
+
+.formulario-libro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.formulario-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formulario-campo label {
+  font-weight: 600;
+  color: #22343a;
+}
+
+.formulario-campo input,
+.formulario-campo select {
+  width: 100%;
+  min-height: 2.75rem;
+
+  padding: 0.7rem;
+  border: 1px solid #a6bfbb;
+  border-radius: 0.5rem;
+
+  background-color: white;
+  color: #22343a;
+}
+
+.formulario-campo input:focus,
+.formulario-campo select:focus {
+  border-color: #205b63;
+}
+
+.formulario-campo [aria-invalid="true"] {
+  border-color: #a12a3b;
+  background-color: #fff8f8;
+}
+
+.error-campo {
+  margin: 0;
+  color: #a12a3b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.mensaje-exito {
+  background-color: #daf2df;
+  color: #246539;
+
+  border: 1px solid #9dccaa;
+  border-radius: 0.5rem;
+
+  padding: 0.85rem;
+  margin: 0;
+}
+
+.formulario-libro .btn-accion {
+  justify-self: start;
+}
+
+@media (min-width: 750px) {
+  .formulario-libro {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .formulario-libro .btn-accion,
+  .mensaje-exito {
+    grid-column: 1 / -1;
+  }
+
+  .formulario-libro .btn-accion {
+    justify-self: start;
+  }
+}

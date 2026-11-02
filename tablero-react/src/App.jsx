@@ -1,11 +1,13 @@
 // =========================================
-// COMPONENTE PRINCIPAL — APP
+// ESTANTERÍA COMÚN — PARTE B
+// COMPONENTE PRINCIPAL: APP
 //
 // Responsabilidades:
-// - Mantener el estado de libros.
-// - Mantener el estado compartido de filtros.
-// - Coordinar componentes hermanos.
-// - Derivar la lista visible desde el estado.
+// - Mantener el estado de las lecturas.
+// - Coordinar filtros y resumen.
+// - Administrar las interacciones del tablero.
+// - Incorporar libros desde el formulario.
+// - Derivar información sin duplicar estado.
 // =========================================
 
 import { useState } from "react";
@@ -18,25 +20,40 @@ import {
 import {
   actualizarEstadoLectura,
   quitarLibro,
+  agregarLibro,
   filtrarLibros
 } from "./utils/lecturas.js";
+
+import {
+  crearLibroDesdeFormulario
+} from "./utils/validacionLibro.js";
+
+// Componentes de estructura.
 
 import Cabecera from "./components/layout/Cabecera.jsx";
 
 import Panel from "./components/layout/Panel.jsx";
 
+// Componentes de libros.
+
 import ListaLibros from "./components/libros/ListaLibros.jsx";
+
+// Componentes hermanos.
 
 import Filtros from "./components/lecturas/Filtros.jsx";
 
 import Resumen from "./components/lecturas/Resumen.jsx";
+
+// Formulario controlado.
+
+import FormularioLibro from "./components/formularios/FormularioLibro.jsx";
 
 import "./App.css";
 
 function App() {
 
   // =====================================
-  // ESTADO PRINCIPAL DE LECTURAS
+  // ESTADO PRINCIPAL
   // =====================================
 
   const [libros, setLibros] = useState(
@@ -55,7 +72,7 @@ function App() {
   ] = useState(null);
 
   // =====================================
-  // ESTADO ELEVADO DE LOS FILTROS
+  // FILTROS ELEVADOS
   // =====================================
 
   const [
@@ -69,11 +86,11 @@ function App() {
   ] = useState("Todos");
 
   // =====================================
-  // VALORES DERIVADOS
+  // DATOS DERIVADOS
   // =====================================
 
-  // No guardamos esta lista en useState.
-  // Se calcula desde libros y ambos filtros.
+  // La lista visible se obtiene directamente
+  // del estado y los filtros actuales.
 
   const librosVisibles = filtrarLibros(
     libros,
@@ -81,7 +98,8 @@ function App() {
     filtroMiembro
   );
 
-  // El libro seleccionado también se deriva.
+  // La selección también se deriva.
+  // No almacenamos otra copia del libro.
 
   const libroSeleccionado = libros.find(
     libro => libro.id === seleccionadoId
@@ -93,25 +111,38 @@ function App() {
       : "No hay libros que coincidan con los filtros seleccionados.";
 
   // =====================================
-  // CONTROLADORES DE INTERACCIÓN
+  // SELECCIONAR LIBRO
   // =====================================
 
   function seleccionarLibro(id) {
+
     setSeleccionadoId(
       anterior => anterior === id ? null : id
     );
+
   }
 
+  // =====================================
+  // CAMBIAR ESTADO
+  // =====================================
+
   function cambiarEstadoLibro(id) {
+
     setLibros(
       anteriores => actualizarEstadoLectura(
         anteriores,
         id
       )
     );
+
   }
 
+  // =====================================
+  // QUITAR LIBRO
+  // =====================================
+
   function eliminarLibro(id) {
+
     setLibros(
       anteriores => quitarLibro(
         anteriores,
@@ -119,13 +150,52 @@ function App() {
       )
     );
 
+    // Limpiamos la selección si corresponde.
+
     setSeleccionadoId(
       anterior => anterior === id ? null : anterior
     );
+
   }
 
   // =====================================
-  // RENDERIZADO
+  // AGREGAR LIBRO
+  // =====================================
+
+  function agregarNuevoLibro(datos) {
+
+    // Cada nuevo libro recibe un identificador
+    // único que no depende del índice del arreglo.
+
+    const id = `libro-${crypto.randomUUID()}`;
+
+    const nuevoLibro = crearLibroDesdeFormulario(
+      datos,
+      id
+    );
+
+    // La colección se actualiza sin mutación.
+
+    setLibros(
+      anteriores => agregarLibro(
+        anteriores,
+        nuevoLibro
+      )
+    );
+
+    // Restablecemos los filtros para garantizar
+    // que el libro recién agregado sea visible.
+
+    setFiltroEstado("Todos");
+    setFiltroMiembro("Todos");
+
+    // Seleccionamos el nuevo libro.
+
+    setSeleccionadoId(nuevoLibro.id);
+  }
+
+  // =====================================
+  // INTERFAZ
   // =====================================
 
   return (
@@ -135,19 +205,22 @@ function App() {
 
       <main className="contenedor contenido-principal">
 
+        {/* ============================== */}
+        {/* LISTA Y ANÁLISIS DE LECTURAS   */}
+        {/* ============================== */}
+
         <Panel
           titulo="Lecturas del club"
           idTitulo="titulo-lecturas"
         >
 
           <p>
-            Filtra los libros por estado o miembro.
-            Los resultados y el resumen se
-            actualizan automáticamente.
+            Consulta, filtra y administra
+            las lecturas del club.
           </p>
 
-          {/* Componentes hermanos.
-              Su estado compartido reside en App. */}
+          {/* Filtros y Resumen son hermanos.
+              Comparten datos desde App. */}
 
           <div className="dashboard-analisis">
 
@@ -176,6 +249,10 @@ function App() {
           />
 
         </Panel>
+
+        {/* ============================== */}
+        {/* DETALLE DEL LIBRO SELECCIONADO */}
+        {/* ============================== */}
 
         <Panel
           titulo="Selección actual"
@@ -209,6 +286,27 @@ function App() {
             </p>
 
           )}
+
+        </Panel>
+
+        {/* ============================== */}
+        {/* FORMULARIO CONTROLADO          */}
+        {/* ============================== */}
+
+        <Panel
+          titulo="Agregar un libro"
+          idTitulo="titulo-agregar"
+        >
+
+          <p>
+            Registra un libro para el club.
+            Todos los campos son obligatorios.
+          </p>
+
+          <FormularioLibro
+            miembros={miembrosIniciales}
+            onAgregar={agregarNuevoLibro}
+          />
 
         </Panel>
 
