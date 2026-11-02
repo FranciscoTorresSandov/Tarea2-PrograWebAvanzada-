@@ -1,9 +1,11 @@
 // =========================================
 // UTILIDADES DE LECTURA
 //
-// Responsabilidad:
-// Transformar datos sin modificar
-// los arreglos u objetos originales.
+// Responsabilidades:
+// - Estados de lectura.
+// - Transformaciones inmutables.
+// - Filtrado de libros.
+// - Cálculo de estadísticas.
 // =========================================
 
 export const ESTADOS_LECTURA = Object.freeze([
@@ -13,9 +15,7 @@ export const ESTADOS_LECTURA = Object.freeze([
 ]);
 
 /**
- * Calcula el siguiente estado de lectura.
- *
- * Pendiente -> Leyendo -> Leído -> Pendiente
+ * Obtiene el siguiente estado permitido.
  */
 export function siguienteEstado(estadoActual) {
   const indiceActual = ESTADOS_LECTURA.indexOf(
@@ -35,10 +35,8 @@ export function siguienteEstado(estadoActual) {
 }
 
 /**
- * Devuelve una nueva lista con el estado
- * actualizado del libro seleccionado.
- *
- * No modifica el arreglo recibido.
+ * Cambia un estado sin mutar el arreglo
+ * ni el objeto original del libro.
  */
 export function actualizarEstadoLectura(
   libros,
@@ -59,8 +57,7 @@ export function actualizarEstadoLectura(
 }
 
 /**
- * Devuelve una lista nueva sin el libro
- * cuyo identificador coincide con id.
+ * Elimina un libro creando un arreglo nuevo.
  */
 export function quitarLibro(libros, id) {
   return libros.filter(
@@ -69,9 +66,7 @@ export function quitarLibro(libros, id) {
 }
 
 /**
- * Agrega un libro creando un nuevo arreglo.
- *
- * Comprueba que el identificador no exista.
+ * Agrega un libro sin mutar el arreglo recibido.
  */
 export function agregarLibro(libros, nuevoLibro) {
   const duplicado = libros.some(
@@ -88,4 +83,68 @@ export function agregarLibro(libros, nuevoLibro) {
     ...libros,
     nuevoLibro
   ];
+}
+
+/**
+ * Filtra libros por estado y miembro.
+ *
+ * Los filtros se aplican simultáneamente.
+ * "Todos" significa que no se restringe
+ * por ese criterio.
+ *
+ * @returns {Array}
+ */
+export function filtrarLibros(
+  libros,
+  filtroEstado,
+  filtroMiembro
+) {
+  return libros.filter(libro => {
+
+    const coincideEstado =
+      filtroEstado === "Todos" ||
+      libro.estado === filtroEstado;
+
+    const coincideMiembro =
+      filtroMiembro === "Todos" ||
+      libro.miembroId === filtroMiembro;
+
+    return (
+      coincideEstado &&
+      coincideMiembro
+    );
+
+  });
+}
+
+/**
+ * Calcula la cantidad de libros por estado.
+ *
+ * Devuelve siempre las tres categorías,
+ * incluso si alguna tiene cero libros.
+ *
+ * No almacena ni modifica estado.
+ */
+export function resumirEstados(libros) {
+
+  const resumen = {
+    Pendiente: 0,
+    Leyendo: 0,
+    "Leído": 0
+  };
+
+  libros.forEach(libro => {
+
+    if (
+      Object.hasOwn(
+        resumen,
+        libro.estado
+      )
+    ) {
+      resumen[libro.estado]++;
+    }
+
+  });
+
+  return resumen;
 }

@@ -1,0 +1,43 @@
+/* =========================================
+   RESUMEN DE LECTURAS
+   ========================================= */
+
+.resumen-panel {
+  border: 1px solid #d7e5e2;
+  border-radius: 0.75rem;
+  background-color: #edf6f3;
+  padding: 1.25rem;
+}
+
+.resumen-panel h3 {
+  margin-top: 0;
+  color: #205b63;
+  font-size: 1.15rem;
+}
+
+.resumen-total {
+  margin-bottom: 0.75rem;
+}
+
+.resumen-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resumen-lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #cadfda;
+}
+
+.resumen-lista li:last-child {
+  border-bottom: none;
+}
+
+.resumen-lista strong {
+  color: #205b63;
+}

@@ -1,0 +1,58 @@
+/* =========================================
+   FILTROS DEL TABLERO
+   ========================================= */
+
+/* Organiza filtros y resumen como hermanos. */
+
+.dashboard-analisis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.filtros-panel {
+  border: 1px solid #d7e5e2;
+  border-radius: 0.75rem;
+  background-color: #f7faf9;
+  padding: 1.25rem;
+}
+
+.filtros-panel h3 {
+  margin-top: 0;
+  color: #205b63;
+  font-size: 1.15rem;
+}
+
+.filtros-contenido {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.campo-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.campo-filtro label {
+  font-weight: 600;
+}
+
+.campo-filtro select {
+  width: 100%;
+  min-height: 2.65rem;
+  border: 1px solid #a6bfbb;
+  border-radius: 0.5rem;
+  background-color: white;
+  padding: 0.6rem;
+  color: #22343a;
+}
+
+@media (min-width: 750px) {
+  .dashboard-analisis {
+    grid-template-columns:
+      minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
