@@ -1,730 +1,304 @@
 
-# Estantería Común
+# Estantería Común — Tarea 2
 
-**Universidad CENFOTEC**  
+**Universidad:** CENFOTEC  
 **Curso:** SOFT-12 — Programación Web Avanzada  
-**Proyecto:** Tarea 2  
 **Estudiante:** Francisco Torres Sandoval  
-**Periodo:** III Cuatrimestre 2026
-
----
+**Periodo:** III cuatrimestre de 2026
 
 ## 1. Descripción del proyecto
 
-Estantería Común es una aplicación web desarrollada para
-un club de lectura comunitario.
+**Estantería Común** es un proyecto para un club de lectura comunitario, formado por dos aplicaciones web independientes que permiten comparar la actualización manual del DOM con el modelo de componentes y estado de React.
 
-Su objetivo es permitir que los usuarios consulten libros
-mediante una API pública, administren una lista personal
-de lecturas y propongan nuevas obras para las sesiones
-del club.
+- **Parte A — Buscador público:** JavaScript nativo, Bootstrap y Sass. Consulta libros en Open Library, permite mantener una lista de lecturas y enviar una propuesta de lectura a un servicio de pruebas.
+- **Parte B — Tablero del club:** React con Vite. Administra una colección local de libros y miembros mediante componentes, estado, filtros, resumen y formulario controlado.
 
-El proyecto está dividido en dos partes:
-
-- **Parte A:** Buscador de libros desarrollado con JavaScript,
-  Bootstrap y Sass.
-- **Parte B:** Tablero de lecturas desarrollado con React.
-
-Ambas partes permiten estudiar diferentes enfoques para
-administrar el estado y actualizar las interfaces web.
-
-### Estado actual
-
-**Commits 1 al 8: Parte A**
-
-Se ha desarrollado la estructura y funcionalidad del
-buscador, la lista de lecturas y el formulario de propuestas.
-
-El commit 8 incorpora el trabajo de depuración, análisis
-de rendimiento y optimización de estilos.
-
-**Commits 9 al 15: pendientes**
-
-La implementación del tablero React, su integración y
-la documentación comparativa se realizarán durante
-los próximos commits.
-
----
+En las dos partes se puede **agregar un libro, cambiar su estado entre Pendiente, Leyendo y Leído y quitarlo**. Los datos de las listas se mantienen únicamente en memoria: no se requiere una base de datos ni persistencia tras recargar la página.
 
 ## 2. Tecnologías utilizadas
 
-### Parte A
+| Parte | Tecnologías y propósito |
+| --- | --- |
+| A | HTML5, CSS, JavaScript (módulos ES), Bootstrap instalado con npm, Sass, Fetch API, Open Library y JSONPlaceholder. |
+| B | React, JSX, `useState`, JavaScript, CSS adaptable y Vite. |
+| Ambas | Node.js, npm, Git, GitHub y herramientas de desarrollo del navegador. |
 
-- HTML5: estructura semántica y formularios.
-- CSS3: diseño y presentación de componentes.
-- JavaScript ES6+: lógica y manipulación del DOM.
-- Bootstrap 5: diseño adaptable y componentes visuales.
-- Sass (SCSS): personalización y modularización de estilos.
-- Vite: servidor de desarrollo y compilación.
-- npm: gestión de dependencias.
-- Fetch API: comunicación con servicios externos.
-- Open Library API: búsqueda de libros.
-- JSONPlaceholder: simulación del envío de propuestas.
-- Git y GitHub: control de versiones.
-
-### Parte B
-
-React y Vite.
-
-Esta parte se incorporará a partir del commit 9.
-
----
+**Diferencia importante:** la Parte B no consume APIs externas; sus datos iniciales provienen de `tablero-react/src/data/datosIniciales.js`.
 
 ## 3. Estructura del repositorio
 
+La siguiente es la **estructura prevista del entregable completo** tras implementar los commits 1–16. Los archivos generados o excluidos por Git se identifican en las notas posteriores.
+
 ```text
 tarea-2/
-│
 ├── README.md
 ├── .gitignore
-│
 ├── docs/
 │   ├── depuracion.md
+│   ├── pruebas.md
+│   ├── rubrica.md
+│   ├── defensa.md
 │   └── capturas/
-│
+│       ├── .gitkeep
+│       ├── 01-error.png
+│       ├── 02-breakpoint.png
+│       ├── 03-network-antes.png
+│       └── 04-network-despues.png
 ├── buscador-js/
-│   │
 │   ├── index.html
 │   ├── package.json
 │   ├── package-lock.json
-│   │
+│   ├── public/
+│   │   └── portada-alternativa.svg
 │   ├── css/
 │   │   └── main.css
-│   │
 │   ├── scss/
 │   │   ├── main.scss
 │   │   ├── _variables.scss
 │   │   ├── _mixins.scss
 │   │   ├── _funciones.scss
 │   │   └── _componentes.scss
-│   │
 │   ├── js/
 │   │   ├── main.js
 │   │   ├── api.js
 │   │   ├── render.js
 │   │   ├── lecturas.js
-│   │   ├── estado-lecturas.js
+│   │   ├── render-lecturas.js
 │   │   ├── formulario.js
 │   │   ├── validacion.js
 │   │   ├── autores.js
 │   │   └── api-propuestas.js
-│   │
-│   └── public/
-│
+│   └── tests/
+│       ├── lecturas.test.js
+│       └── correcciones.test.js
 └── tablero-react/
-    └── (pendiente de implementación)
+    ├── index.html
+    ├── package.json
+    ├── package-lock.json
+    ├── vite.config.js
+    ├── eslint.config.js
+    ├── public/
+    ├── src/
+    │   ├── main.jsx
+    │   ├── App.jsx
+    │   ├── App.css
+    │   ├── index.css
+    │   ├── data/
+    │   │   └── datosIniciales.js
+    │   ├── utils/
+    │   │   ├── lecturas.js
+    │   │   └── validacionLibro.js
+    │   └── components/
+    │       ├── layout/
+    │       │   ├── Cabecera.jsx
+    │       │   └── Panel.jsx
+    │       ├── libros/
+    │       │   ├── ListaLibros.jsx
+    │       │   └── TarjetaLibro.jsx
+    │       ├── lecturas/
+    │       │   ├── Filtros.jsx
+    │       │   ├── Filtros.css
+    │       │   ├── Resumen.jsx
+    │       │   └── Resumen.css
+    │       ├── formularios/
+    │       │   ├── FormularioLibro.jsx
+    │       │   └── FormularioLibro.css
+    │       └── ui/
+    │           └── BotonAccion.jsx
+    └── tests/
+        ├── lecturas.test.js
+        └── validacionLibro.test.js
 ```
 
-La estructura separa las responsabilidades del proyecto
-para facilitar el mantenimiento y las pruebas.
+**Notas sobre la estructura:**
 
-Los módulos JavaScript utilizan importaciones y
-exportaciones ES.
-
----
+- `buscador-js/css/main.css` se **genera** con Sass y está excluido mediante `.gitignore`; no tiene por qué aparecer en GitHub, pero sí en el equipo después de compilar.
+- `node_modules/` y `dist/` son carpetas generadas y no se incorporan al repositorio.
+- Las cuatro imágenes de `docs/capturas/` deben ser **capturas reales** tomadas con DevTools. Si todavía no se han creado, no deben darse por entregadas.
+- El archivo que administra el estado en la Parte A es **`js/lecturas.js`**. El que construye y actualiza las filas es **`js/render-lecturas.js`**; no utilizamos `estado-lecturas.js` en la implementación manual final.
+- Los archivos de configuración que crea Vite pueden variar ligeramente según la versión de la plantilla; debe conservarse la configuración que realmente exista en el proyecto.
 
 ## 4. Requisitos previos
 
-Para ejecutar la aplicación se necesita:
+Se necesita Node.js compatible con la versión de Vite instalada, npm, Git, un editor como Visual Studio Code y un navegador moderno. La **Parte A** requiere conexión a Internet para consultar Open Library y utilizar JSONPlaceholder.
 
-1. Node.js compatible con la versión de Vite instalada.
-2. npm.
-3. Git.
-4. Visual Studio Code u otro editor.
-5. Un navegador moderno.
-6. Conexión a Internet para consumir las APIs externas.
-
-Para comprobar las instalaciones:
+Verificar las herramientas:
 
 ```bash
-node -v
-npm -v
+node --version
+npm --version
 git --version
 ```
 
-No es necesario instalar Bootstrap o Sass globalmente.
-Las dependencias se administran mediante npm.
+Bootstrap y Sass se instalan localmente con npm; no se requieren instalaciones globales.
 
----
+## 5. Instalación y ejecución — Parte A
 
-## 5. Instalación del proyecto
-
-Clonar el repositorio desde GitHub:
-
-```bash
-git clone URL_DEL_REPOSITORIO
-```
-
-Ingresar al directorio principal:
-
-```bash
-cd tarea-2
-```
-
-Acceder a la Parte A:
+Desde la raíz del repositorio:
 
 ```bash
 cd buscador-js
-```
-
-Instalar dependencias:
-
-```bash
-npm install
-```
-
-Esto descarga las dependencias indicadas en
-`package.json`.
-
-La carpeta `node_modules` no debe incorporarse
-al repositorio Git.
-
----
-
-## 6. Ejecutar la Parte A
-
-### 6.1 Compilar Sass
-
-Desde el directorio `buscador-js`:
-
-```bash
+npm ci
 npm run build:css
+npm run dev -- --port 5173
 ```
 
-Este comando transforma los archivos SCSS en CSS.
+Abrir `http://localhost:5173/` (o la dirección mostrada por Vite).
 
-El archivo generado se encuentra en:
-
-```text
-buscador-js/css/main.css
-```
-
-### 6.2 Iniciar el servidor de desarrollo
-
-```bash
-npm run dev
-```
-
-Vite mostrará una dirección local similar a:
-
-```text
-http://localhost:5173/
-```
-
-Abrir esa dirección en el navegador.
-
-No se recomienda abrir directamente `index.html`
-mediante el protocolo `file://`, ya que el proyecto
-utiliza módulos JavaScript.
-
-### 6.3 Compilación automática de Sass
-
-En otra terminal:
+Para recompilar Sass automáticamente durante el desarrollo, ejecutar en **otra terminal** situada en `buscador-js`:
 
 ```bash
 npm run watch:css
 ```
 
-Este comando recompila los estilos cuando se modifican
-los archivos SCSS.
-
-### 6.4 Generar una compilación de producción
+Para construir la versión de producción:
 
 ```bash
-npm run build:css
 npm run build
 ```
 
-La compilación de Vite genera los archivos optimizados
-para distribución.
-
----
-
-## 7. Funcionalidades de la Parte A
-
-### 7.1 Búsqueda de libros
-
-El usuario puede buscar libros escribiendo un título
-o el nombre de un autor.
-
-La aplicación consulta Open Library utilizando:
-
-```text
-https://openlibrary.org/search.json
-```
-
-La búsqueda se realiza mediante `fetch` y `async/await`.
-
-Cada consulta solicita hasta 12 resultados.
-
-Se contemplan cuatro estados de interfaz:
-
-- Cargando resultados.
-- Resultados disponibles.
-- Sin resultados.
-- Error de comunicación.
-
-Cada resultado presenta información como:
-
-- Título del libro.
-- Autor o autores.
-- Año de primera publicación.
-- Portada, cuando está disponible.
-
-Si no existe una portada, se utiliza una imagen
-alternativa.
-
-### 7.2 Detalles de un libro
-
-El usuario puede consultar información adicional
-mediante un modal de Bootstrap.
-
-El contenido se actualiza dinámicamente según
-el libro seleccionado.
-
-### 7.3 Lista personal de lecturas
-
-Los usuarios pueden agregar libros a una lista
-personal mantenida en memoria.
-
-Cada libro puede encontrarse en uno de tres estados:
-
-1. Pendiente.
-2. Leyendo.
-3. Leído.
-
-El usuario puede cambiar el estado o quitar un libro.
-
-No se permite agregar dos veces el mismo libro.
-
-Los eventos de los botones se gestionan mediante
-delegación de eventos.
-
-Las acciones de agregar, cambiar estado y quitar
-utilizan clases CSS para activar animaciones.
-
-Los datos permanecen en memoria durante la sesión.
-No se utiliza una base de datos.
-
----
-
-## 8. Formulario de propuesta de lectura
-
-El formulario permite proponer libros para las
-próximas sesiones del club.
-
-### Campos disponibles
-
-- Título del libro.
-- Uno o más autores.
-- Año de publicación.
-- Cantidad de páginas.
-- Género literario.
-- Correo electrónico del proponente.
-- Fecha propuesta para la sesión.
-- Motivo de la propuesta.
-
-### 8.1 Validaciones
-
-El formulario utiliza las validaciones nativas
-de HTML5 y la Constraint Validation API.
-
-Se utilizan restricciones como:
-
-- `required`
-- `min`
-- `max`
-- `minlength`
-- `maxlength`
-- `type="email"`
-- `type="date"`
-
-También se implementan reglas personalizadas
-mediante JavaScript.
-
-Entre ellas:
-
-- El título es obligatorio.
-- Debe existir al menos un autor.
-- El año de publicación no puede ser futuro.
-- La cantidad de páginas debe ser válida.
-- El correo electrónico debe tener un formato correcto.
-- La fecha de sesión no puede ser anterior al día actual.
-- El motivo debe cumplir la longitud mínima establecida.
-
-Los errores se comunican al usuario para que
-pueda corregir los datos.
-
-### 8.2 Autores dinámicos
-
-El formulario permite agregar y eliminar campos
-de autor sin recargar la página.
-
-Se establece un mínimo de un autor y un máximo
-de cinco autores.
-
-Los campos adicionales utilizan las mismas
-restricciones que el campo original.
-
-### 8.3 Envío asincrónico
-
-Una vez completadas las validaciones, la propuesta
-se envía mediante `fetch`.
-
-Servicio utilizado:
-
-```text
-https://jsonplaceholder.typicode.com/posts
-```
-
-Se utiliza una petición HTTP POST para simular
-el registro de una propuesta.
-
-JSONPlaceholder es un servicio de pruebas, por
-lo que no representa una base de datos persistente
-del proyecto.
-
-El formulario debe mostrar mensajes de éxito
-o error sin recargar la página.
-
----
-
-## 9. Organización del código JavaScript
-
-Los archivos JavaScript se distribuyen en módulos
-para separar responsabilidades.
-
-### main.js
-
-Punto de entrada de la aplicación.
-
-Coordina la inicialización de los componentes
-y los eventos principales.
-
-### api.js
-
-Se encarga de realizar solicitudes a Open Library.
-
-Centraliza la comunicación con el servicio
-y la gestión de errores HTTP.
-
-### render.js
-
-Construye los elementos visuales de los libros
-utilizando métodos del DOM.
-
-Los datos procedentes de la API se insertan
-como texto para evitar interpretar contenido
-externo como HTML.
-
-### estado-lecturas.js
-
-Administra las operaciones de estado sobre
-la lista personal.
-
-Contiene la lógica para agregar libros,
-evitar duplicados y cambiar estados.
-
-### lecturas.js
-
-Gestiona la representación de la lista y
-la interacción con sus botones.
-
-Utiliza delegación de eventos.
-
-### validacion.js
-
-Contiene las reglas de validación del formulario.
-
-Permite verificar restricciones y comunicar
-errores personalizados.
-
-### formulario.js
-
-Coordina la lectura de los campos, la validación
-y el proceso de envío de las propuestas.
-
-### autores.js
-
-Administra los campos dinámicos de autores.
-
-Controla la incorporación y eliminación
-de campos y sus límites.
-
-### api-propuestas.js
-
-Centraliza la comunicación con JSONPlaceholder.
-
-Realiza la solicitud POST y gestiona las
-respuestas del servicio de pruebas.
-
----
-
-## 10. Bootstrap y Sass
-
-Bootstrap se instala mediante npm y se
-personaliza utilizando Sass.
-
-Los estilos se organizan en archivos parciales.
-
-### _variables.scss
-
-Define variables de personalización como
-colores, espacios y otros valores reutilizables.
-
-### _mixins.scss
-
-Contiene mixins que permiten reutilizar
-declaraciones CSS.
-
-### _funciones.scss
-
-Contiene funciones Sass para calcular
-valores reutilizables.
-
-### _componentes.scss
-
-Incluye estilos personalizados de los componentes
-y las animaciones de la interfaz.
-
-### main.scss
-
-Archivo principal encargado de importar los
-estilos necesarios y generar el CSS final.
-
-La aplicación combina:
-
-- Sistema de grillas de Bootstrap.
-- Clases utilitarias.
-- Navbar.
-- Tarjetas.
-- Modal.
-- Formularios.
-- Alertas.
-- Tablas.
-- CSS Grid.
-- Media queries.
-
-Se utiliza un enfoque mobile-first para
-adaptar la interfaz a diferentes tamaños
-de pantalla.
-
----
-
-## 11. Depuración y optimización
-
-Durante el commit 8 se incorpora el proceso
-de análisis y documentación del rendimiento
-de la Parte A.
-
-El registro técnico se encuentra en:
-
-```text
-docs/depuracion.md
-```
-
-Las capturas de evidencia se almacenan en:
-
-```text
-docs/capturas/
-```
-
-### 11.1 Depuración
-
-Se utilizan las herramientas de desarrollo
-del navegador, especialmente:
-
-- Console.
-- Sources.
-- Network.
-- Breakpoints.
-
-El documento de depuración debe registrar
-un error real encontrado durante el desarrollo.
-
-También debe incluir:
-
-1. Descripción del problema.
-2. Pasos para reproducirlo.
-3. Ubicación del breakpoint.
-4. Análisis de las variables relevantes.
-5. Causa identificada.
-6. Solución implementada.
-7. Evidencia de la corrección.
-
-### 11.2 Análisis de rendimiento
-
-El panel Network permite analizar las solicitudes
-y los recursos cargados por la aplicación.
-
-Las métricas principales son:
-
-- Cantidad de peticiones.
-- Tamaño transferido.
-- Tamaño total de los recursos.
-- Tiempo de carga.
-
-Las mediciones deben realizarse bajo condiciones
-comparables antes y después de la optimización.
-
-### 11.3 Optimización
-
-La optimización debe reducir la cantidad o
-el peso de los recursos utilizados, sin afectar
-las funcionalidades de la aplicación.
-
-Las técnicas consideradas incluyen:
-
-- Importación selectiva de estilos Bootstrap.
-- Reducción del CSS innecesario.
-- Optimización del tamaño de las imágenes.
-- Eliminación de recursos que no se utilizan.
-
-Los cambios aplicados y sus resultados medidos
-se documentan en `docs/depuracion.md`.
-
-No se incluyen valores de rendimiento estimados.
-Las métricas deben obtenerse directamente
-desde DevTools.
-
----
-
-## 12. Pruebas de la Parte A
-
-### 12.1 Pruebas automatizadas
-
-Desde `buscador-js`:
+El punto de entrada Sass es `scss/main.scss`, que genera `css/main.css`. **Es necesario compilar Sass al clonar el repositorio**, porque el CSS generado no se versiona. No abrir el HTML usando `file://`: utilizar Vite.
+
+### Funcionalidades de la Parte A
+
+- Búsqueda al enviar el formulario, por título o autor, mediante `GET https://openlibrary.org/search.json?q={texto}&limit=12`.
+- Estados explícitos de carga, error, resultados vacíos y resultados encontrados.
+- Tarjetas creadas con métodos del DOM, sin insertar información externa mediante `innerHTML`.
+- Título, autores, año, portada alternativa y detalle en un modal de Bootstrap.
+- Lista de lecturas en memoria que impide duplicados; tres estados y eliminación.
+- Delegación de eventos desde el contenedor de la tabla, con transiciones CSS para agregar, actualizar y quitar.
+- Formulario de propuesta con título, entre uno y cinco autores, año, páginas, género, correo, fecha de sesión y motivo.
+- Validación HTML5 y Constraint Validation API con mensajes junto a cada campo; rechazo de años futuros, fechas pasadas y campos de texto inválidos.
+- Envío `POST` asincrónico a `https://jsonplaceholder.typicode.com/posts`, con alerta de éxito o error sin recarga. **JSONPlaceholder simula el registro: no persiste la propuesta.**
+
+### Organización de JavaScript — Parte A
+
+| Archivo | Responsabilidad |
+| --- | --- |
+| `js/main.js` | Inicialización, búsqueda y coordinación de los eventos del catálogo y de la lista. |
+| `js/api.js` | Consulta y normalización de resultados de Open Library. |
+| `js/render.js` | Tarjetas de resultados y contenido del modal. |
+| `js/lecturas.js` | Colección de lecturas en memoria y cambios de estado. |
+| `js/render-lecturas.js` | Creación y actualización puntual de filas, animaciones y eliminación visual. |
+| `js/validacion.js` | Reglas HTML5/complementarias y mensajes de Constraint Validation API. |
+| `js/autores.js` | Creación, eliminación y validación de campos de autores. |
+| `js/formulario.js` | Coordinación del formulario y procesamiento del envío. |
+| `js/api-propuestas.js` | Petición HTTP POST a JSONPlaceholder. |
+
+### Bootstrap y Sass
+
+Se utilizan grilla y utilidades de Bootstrap, más **navbar, cards, modal, formulario, alertas y tabla**. Sass organiza variables de origen, mixins, funciones y estilos de componentes en parciales. El diseño propio emplea CSS Grid, variables CSS, unidades relativas y media queries con enfoque *mobile-first*. Bootstrap no se personaliza mediante `!important`.
+
+## 6. Instalación y ejecución — Parte B (React)
+
+Desde la raíz del repositorio, en una terminal distinta de la Parte A:
 
 ```bash
-npm test
+cd tablero-react
+npm ci
+npm run dev -- --port 5174
 ```
 
-Estas pruebas verifican la lógica cubierta
-por los archivos de pruebas del proyecto.
+Abrir `http://localhost:5174/` (o la dirección mostrada por Vite).
 
-### 12.2 Pruebas funcionales
+Para construir la versión de producción:
 
-Los escenarios que deben comprobarse son:
+```bash
+npm run build
+```
 
-1. Buscar libros por título.
-2. Buscar libros por autor.
-3. Consultar detalles en el modal.
-4. Mostrar resultados vacíos.
-5. Gestionar errores de búsqueda.
-6. Agregar un libro a la lista.
-7. Impedir libros duplicados.
-8. Cambiar el estado de lectura.
-9. Eliminar un libro de la lista.
-10. Comprobar las animaciones.
-11. Validar los campos del formulario.
-12. Rechazar un año futuro.
-13. Rechazar fechas anteriores al día actual.
-14. Agregar autores dinámicamente.
-15. Eliminar autores respetando el mínimo permitido.
-16. Impedir más de cinco autores.
-17. Enviar una propuesta válida.
-18. Mostrar mensajes de éxito y error.
-19. Verificar la interfaz en dispositivos móviles.
-20. Revisar la consola del navegador.
+Para ejecutar ESLint, si está configurado en el `package.json` generado por la plantilla:
 
-Los resultados y evidencias deben corresponder
-a ejecuciones reales de la aplicación.
+```bash
+npm run lint
+```
 
----
+### Funcionalidades de la Parte B
 
-## 13. Parte B — React
+- Libros y miembros iniciales cargados desde un módulo JavaScript local, **sin consumir APIs**.
+- Visualización del miembro proponente y de los estados Pendiente, Leyendo y Leído.
+- Cambio de estado y eliminación utilizando `useState` y operaciones inmutables.
+- Filtros combinables por estado y miembro, junto con un resumen de cantidades por estado.
+- Filtros y resumen como componentes hermanos, sincronizados desde `App.jsx` mediante estado elevado.
+- Lista filtrada y conteos calculados durante el renderizado; no se guardan como estados duplicados.
+- Formulario controlado para agregar libros, con validación y mensajes junto a cada campo.
+- Mensaje cuando no existen libros o cuando ningún libro coincide con los filtros.
+- Componentes reutilizables que reciben props, `children` y funciones; listas con keys estables y sin manipulación directa del DOM en los componentes.
 
-**Pendiente de implementación.**
+### Organización de React
 
-El tablero React se desarrollará a partir
-del commit 9.
+| Archivo o carpeta | Responsabilidad |
+| --- | --- |
+| `src/App.jsx` | Estado compartido, filtros, selección y coordinación de acciones. |
+| `src/data/datosIniciales.js` | Miembros y libros iniciales. |
+| `src/utils/lecturas.js` | Actualizaciones inmutables, filtros y resúmenes. |
+| `src/utils/validacionLibro.js` | Validación y normalización del nuevo libro. |
+| `src/components/layout/` | Cabecera y panel reutilizable mediante `children`. |
+| `src/components/libros/` | Lista y tarjetas de libros. |
+| `src/components/lecturas/` | Filtros y resumen. |
+| `src/components/formularios/` | Formulario controlado. |
+| `src/components/ui/` | Botón reutilizable que recibe una función como prop. |
 
-Esta sección se actualizará cuando se creen
-los componentes, el estado, los filtros
-y el formulario de la Parte B.
+## 7. Del DOM manual a React
 
-También se incorporarán las instrucciones
-de instalación, ejecución y pruebas.
+**Misma interacción comparada: cambiar el estado de un libro.**
 
----
+En la **Parte A**, `buscador-js/js/main.js` detecta el clic mediante una única escucha delegada en la tabla y utiliza `data-accion` y `data-id` para identificar el libro. `buscador-js/js/lecturas.js` cambia el estado en la colección en memoria. Después, `buscador-js/js/render-lecturas.js` localiza la etiqueta de estado de esa fila, actualiza su `textContent` y sus clases y activa una animación. El programador debe mantener sincronizados explícitamente los datos y el DOM.
 
-## 14. Del DOM manual a React
+En la **Parte B**, `tablero-react/src/components/libros/TarjetaLibro.jsx` envía la acción por una prop de función. `tablero-react/src/App.jsx` llama a `setLibros`, usando la función `actualizarEstadoLectura` de `src/utils/lecturas.js`, que crea un arreglo nuevo con `map()` y un nuevo objeto para el libro modificado. React calcula y refleja la interfaz a partir del estado actualizado.
 
-**Sección pendiente de completar.**
+**Diferencia principal:** en React ya no necesitamos buscar manualmente la fila ni cambiar su texto y sus clases cuando se modifica un estado. Describimos la interfaz mediante componentes y actualizamos el estado de forma inmutable; React coordina el renderizado. La Parte A ofrece control explícito de los nodos, mientras que React facilita compartir el estado y componer la interfaz sin sincronización manual de cada elemento.
 
-La comparación definitiva se incorporará
-cuando se implemente la Parte B.
+## 8. Pruebas y depuración
 
-Se analizará cómo cambia el estado de un
-libro mediante manipulación directa del DOM
-en JavaScript y cómo React actualiza
-la interfaz a partir de su estado.
+Desde cada subproyecto, ejecutar las pruebas unitarias de su lógica:
 
-La comparación incluirá referencias
-a los archivos de ambas implementaciones.
+```bash
+node --test
+```
 
----
+Para validar las compilaciones:
 
-## 15. Control de versiones
+```bash
+npm run build
+```
 
-El proyecto utiliza Git y GitHub para
-registrar los avances de forma incremental.
+Las comprobaciones funcionales, resultados observados y casos límite se documentan en `docs/pruebas.md`. Las pruebas unitarias **no sustituyen** la revisión de la interfaz en el navegador ni de la comunicación con los servicios externos.
 
-Se ha organizado un plan de 15 commits
-con responsabilidades diferenciadas.
+`docs/depuracion.md` debe contener un error real investigado mediante breakpoints, capturas de DevTools, cantidad de solicitudes y peso total en Network, así como una optimización con mediciones **antes y después**. Las capturas se guardan en `docs/capturas/`; no se inventan resultados ni métricas.
 
-### Primera etapa — Parte A
+## 9. Control de versiones y entrega
 
-Los primeros ocho commits corresponden
-a la construcción y documentación de
-la aplicación JavaScript.
+El desarrollo se planificó en quince commits descriptivos y un **commit correctivo adicional**, si este último se registró en el repositorio. La existencia, el orden y las fechas reales de los commits deben verificarse con:
 
-Incluyen:
+```bash
+git log --oneline --reverse
+git rev-list --count HEAD
+git status
+```
 
-- Estructura inicial.
-- Integración con Open Library.
-- Renderizado de resultados.
-- Gestión de lecturas.
-- Personalización con Bootstrap y Sass.
-- Validación de propuestas.
-- Autores dinámicos y comunicación asincrónica.
-- Depuración y optimización.
+El repositorio debe incluir la etiqueta **`tarea-2`** apuntando al commit definitivo. Para comprobarla:
 
-### Segunda etapa — Parte B
+```bash
+git show tarea-2 --stat
+```
 
-Los próximos commits incorporarán React,
-la gestión de estado, componentes,
-filtros y funcionalidades del tablero.
+La entrega en Moodle consiste en un archivo **`.txt` con el enlace al repositorio de GitHub**. Antes de entregar, verificar que la etiqueta esté publicada, el README corresponda al código real y las evidencias estén completas.
 
-### Etapa final
+## 10. Defensa técnica
 
-Se completará la documentación comparativa,
-se verificarán las dos aplicaciones y se
-preparará la entrega.
+La defensa individual exige explicar cualquier parte del código, recorrer una interacción completa en ambas aplicaciones y justificar las decisiones de diseño. Deben ejecutarse las dos partes y las modificaciones solicitadas por el profesor se hacen en una **rama aparte**, sin alterar el commit etiquetado.
 
-La etiqueta Git `tarea-2` se creará
-al finalizar el proyecto y deberá apuntar
-al commit definitivo.
+La guía de estudio se encuentra en `docs/defensa.md` y la matriz de los 17 criterios en `docs/rubrica.md`. Durante la defensa no deben utilizarse asistentes de IA ni herramientas de generación o autocompletado de código prohibidas por la consigna.
+
+## 11. Limitaciones del alcance
+
+- Los datos de las lecturas no persisten después de recargar.
+- La Parte A consume APIs externas; la Parte B usa únicamente datos iniciales locales y estado React.
+- JSONPlaceholder devuelve una respuesta de prueba, no crea un registro persistente.
+- No se requiere backend propio ni base de datos.
 
 ---
 
-## 16. Consideraciones importantes
-
-- No se requiere una base de datos.
-- La lista de lecturas de la Parte A se mantiene en memoria.
-- Open Library se utiliza como catálogo externo.
-- JSONPlaceholder simula el registro de propuestas.
-- Las solicitudes externas requieren conexión a Internet.
-- Las dependencias de npm no deben incorporarse al repositorio.
-- El código está organizado en módulos con responsabilidades separadas.
-- Las mediciones de rendimiento deben respaldarse con evidencias reales.
-
----
-
-## 17. Autor
-
-**Francisco Torres Sandoval**
-
-Universidad CENFOTEC  
-Programación Web Avanzada  
-III Cuatrimestre 2026
+**Autor:** Francisco Torres Sandoval  
+**Universidad CENFOTEC — Programación Web Avanzada — III cuatrimestre de 2026**
