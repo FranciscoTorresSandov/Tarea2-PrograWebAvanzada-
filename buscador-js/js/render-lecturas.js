@@ -1,15 +1,20 @@
+
 // =========================================
 // MÓDULO: RENDERIZADO DE LECTURAS
-// Responsabilidad:
-// Crear y actualizar filas de la tabla.
+//
+// Responsabilidades:
+// - Crear filas mediante métodos del DOM.
+// - Agregar filas con transición.
+// - Actualizar estados de forma precisa.
+// - Eliminar filas después de su transición.
+// - Gestionar cancelaciones y movimiento reducido.
 // =========================================
 
 /**
  * Devuelve la clase Bootstrap correspondiente
- * al estado de una lectura.
+ * al estado actual del libro.
  */
 function claseEstado(estado) {
-
   const clases = {
     Pendiente: "text-bg-warning",
     Leyendo: "text-bg-info",
@@ -20,10 +25,9 @@ function claseEstado(estado) {
 }
 
 /**
- * Crea una celda de tabla con contenido textual.
+ * Construye una celda con texto seguro.
  */
 function crearCelda(texto) {
-
   const celda = document.createElement("td");
 
   celda.textContent = texto;
@@ -32,7 +36,10 @@ function crearCelda(texto) {
 }
 
 /**
- * Crea un botón de acción.
+ * Construye un botón con atributos data-*.
+ *
+ * Los atributos serán utilizados desde
+ * el contenedor mediante delegación.
  */
 function crearBoton(
   texto,
@@ -40,16 +47,11 @@ function crearBoton(
   id,
   clases
 ) {
-
   const boton = document.createElement("button");
 
   boton.type = "button";
-
   boton.className = clases;
   boton.textContent = texto;
-
-  // Estos atributos serán utilizados
-  // por la delegación de eventos.
 
   boton.dataset.accion = accion;
   boton.dataset.id = id;
@@ -58,35 +60,45 @@ function crearBoton(
 }
 
 /**
- * Construye una fila de la tabla.
+ * Crea una fila completa de lectura.
  *
- * No inserta cadenas HTML.
- * Utiliza únicamente métodos del DOM.
+ * No utiliza innerHTML.
  */
 export function crearFilaLectura(libro) {
-
   const fila = document.createElement("tr");
 
   fila.className = "fila-lectura entrando";
+
   fila.dataset.id = libro.id;
 
-  // Primera columna: título.
+  // =====================================
+  // COLUMNA: TÍTULO
+  // =====================================
 
   const columnaTitulo = crearCelda(
     libro.titulo
   );
 
-  // Segunda columna: autores.
+  // =====================================
+  // COLUMNA: AUTORES
+  // =====================================
 
   const columnaAutores = crearCelda(
-    libro.autores.join(", ") || "No disponibles"
+    libro.autores.join(", ") ||
+    "No disponibles"
   );
 
-  // Tercera columna: estado.
+  // =====================================
+  // COLUMNA: ESTADO
+  // =====================================
 
-  const columnaEstado = document.createElement("td");
+  const columnaEstado = document.createElement(
+    "td"
+  );
 
-  const etiquetaEstado = document.createElement("span");
+  const etiquetaEstado = document.createElement(
+    "span"
+  );
 
   etiquetaEstado.dataset.campo = "estado";
 
@@ -97,11 +109,17 @@ export function crearFilaLectura(libro) {
 
   columnaEstado.append(etiquetaEstado);
 
-  // Cuarta columna: acciones.
+  // =====================================
+  // COLUMNA: ACCIONES
+  // =====================================
 
-  const columnaAcciones = document.createElement("td");
+  const columnaAcciones = document.createElement(
+    "td"
+  );
 
-  const grupoBotones = document.createElement("div");
+  const grupoBotones = document.createElement(
+    "div"
+  );
 
   grupoBotones.className =
     "d-flex flex-wrap gap-2";
@@ -127,7 +145,9 @@ export function crearFilaLectura(libro) {
 
   columnaAcciones.append(grupoBotones);
 
-  // Incorporamos todas las columnas.
+  // =====================================
+  // CREAR FILA
+  // =====================================
 
   fila.append(
     columnaTitulo,
@@ -140,26 +160,28 @@ export function crearFilaLectura(libro) {
 }
 
 /**
- * Inserta una nueva fila y activa
- * su transición de entrada.
+ * Inserta un libro y activa su animación
+ * de entrada definida en CSS.
  */
 export function agregarFilaLectura(
   contenedor,
   libro
 ) {
-
   const fila = crearFilaLectura(libro);
 
   contenedor.append(fila);
 
-  // Dos cuadros de renderizado permiten que
-  // el navegador registre primero el estado
-  // inicial de la transición.
+  // Separamos el estado inicial del final
+  // para permitir la transición CSS.
 
   requestAnimationFrame(() => {
 
     requestAnimationFrame(() => {
-      fila.classList.remove("entrando");
+
+      if (fila.isConnected) {
+        fila.classList.remove("entrando");
+      }
+
     });
 
   });
@@ -168,14 +190,13 @@ export function agregarFilaLectura(
 }
 
 /**
- * Actualiza exclusivamente la etiqueta visual
- * del estado en una fila existente.
+ * Actualiza solamente la etiqueta del estado
+ * de la fila correspondiente.
  */
 export function actualizarEstadoFila(
   fila,
   nuevoEstado
 ) {
-
   const etiqueta = fila.querySelector(
     '[data-campo="estado"]'
   );
@@ -189,38 +210,118 @@ export function actualizarEstadoFila(
   etiqueta.className =
     `badge ${claseEstado(nuevoEstado)}`;
 
-  // Reiniciamos la animación de actualización.
+  // Reiniciamos la animación visual
+  // para cada cambio de estado.
 
   fila.classList.remove("actualizada");
 
-  // La lectura del tamaño fuerza al navegador
-  // a reconocer el cambio de clase anterior.
+  // Forzamos la lectura del diseño actual
+  // para reiniciar la animación CSS.
   void fila.offsetWidth;
 
   fila.classList.add("actualizada");
 }
 
 /**
- * Ejecuta una transición de salida.
+ * Convierte un tiempo CSS en milisegundos.
  *
- * Solo retira el elemento del DOM cuando
- * finaliza la transición de opacidad.
+ * Ejemplos:
+ * "250ms" -> 250
+ * "0.25s" -> 250
+ */
+function convertirTiempoMs(valor) {
+  const texto = valor.trim();
+
+  const numero = Number.parseFloat(texto);
+
+  if (!Number.isFinite(numero)) {
+    return 0;
+  }
+
+  if (texto.endsWith("ms")) {
+    return numero;
+  }
+
+  if (texto.endsWith("s")) {
+    return numero * 1000;
+  }
+
+  return 0;
+}
+
+/**
+ * Obtiene duración y retraso de la transición
+ * que afecta a la propiedad opacity.
+ */
+function obtenerDuracionOpacidad(fila) {
+  const estilos = window.getComputedStyle(fila);
+
+  const propiedades = estilos.transitionProperty
+    .split(",")
+    .map(valor => valor.trim());
+
+  const duraciones = estilos.transitionDuration
+    .split(",")
+    .map(convertirTiempoMs);
+
+  const retrasos = estilos.transitionDelay
+    .split(",")
+    .map(convertirTiempoMs);
+
+  const indice = propiedades.findIndex(
+    propiedad =>
+      propiedad === "opacity" ||
+      propiedad === "all"
+  );
+
+  if (
+    indice === -1 ||
+    duraciones.length === 0 ||
+    retrasos.length === 0
+  ) {
+    return 0;
+  }
+
+  // CSS permite listas de longitudes distintas.
+  // Sus valores se repiten cuando es necesario.
+
+  const duracion =
+    duraciones[indice % duraciones.length];
+
+  const retraso =
+    retrasos[indice % retrasos.length];
+
+  return Math.max(
+    0,
+    duracion + retraso
+  );
+}
+
+/**
+ * Retira un libro después de su transición.
  *
- * @param {HTMLElement} fila
- * @param {Function} alFinalizar
+ * Contempla:
+ * - transitionend
+ * - transitioncancel
+ * - ausencia de evento
+ * - preferencia de movimiento reducido
+ *
+ * El callback solo se ejecuta una vez.
  */
 export function animarEliminacion(
   fila,
   alFinalizar
 ) {
 
-  // Evita iniciar dos eliminaciones simultáneas.
+  // Impide iniciar otra eliminación
+  // sobre la misma fila.
+
   if (fila.classList.contains("saliendo")) {
     return;
   }
 
-  // Deshabilitamos las acciones mientras
-  // se está eliminando la fila.
+  // Desactivamos los botones durante
+  // el proceso de eliminación.
 
   fila.querySelectorAll("button").forEach(
     boton => {
@@ -228,29 +329,52 @@ export function animarEliminacion(
     }
   );
 
-  const finalizar = () => {
+  let finalizada = false;
+
+  let temporizador = null;
+
+  /**
+   * Finaliza la operación una sola vez.
+   */
+  function finalizar() {
+
+    if (finalizada) {
+      return;
+    }
+
+    finalizada = true;
+
+    // Eliminamos listeners temporales.
+
+    fila.removeEventListener(
+      "transitionend",
+      manejarFinTransicion
+    );
+
+    fila.removeEventListener(
+      "transitioncancel",
+      manejarCancelacion
+    );
+
+    if (temporizador !== null) {
+      window.clearTimeout(temporizador);
+    }
+
+    // Retiramos exclusivamente esta fila.
+
     fila.remove();
+
+    // Notificamos al módulo principal
+    // que puede actualizar el estado.
+
     alFinalizar();
-  };
-
-  // Respetamos a usuarios que prefieren
-  // movimiento reducido.
-
-  const movimientoReducido = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  if (movimientoReducido) {
-    finalizar();
-    return;
   }
 
+  /**
+   * Atiende el fin de la opacidad
+   * de la fila, no el de sus hijos.
+   */
   function manejarFinTransicion(evento) {
-
-    // transitionend puede propagarse desde
-    // elementos hijos. Solo nos interesa
-    // la transición de opacidad de esta fila.
-
     if (
       evento.target !== fila ||
       evento.propertyName !== "opacity"
@@ -258,18 +382,82 @@ export function animarEliminacion(
       return;
     }
 
-    fila.removeEventListener(
-      "transitionend",
-      manejarFinTransicion
-    );
+    finalizar();
+  }
+
+  /**
+   * Si la transición es cancelada,
+   * completamos igualmente la operación.
+   */
+  function manejarCancelacion(evento) {
+    if (
+      evento.target !== fila ||
+      evento.propertyName !== "opacity"
+    ) {
+      return;
+    }
 
     finalizar();
   }
+
+  // =====================================
+  // PREFERENCIAS DE ACCESIBILIDAD
+  // =====================================
+
+  const movimientoReducido =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  if (movimientoReducido) {
+    finalizar();
+    return;
+  }
+
+  // =====================================
+  // REGISTRAR EVENTOS
+  // =====================================
 
   fila.addEventListener(
     "transitionend",
     manejarFinTransicion
   );
 
+  fila.addEventListener(
+    "transitioncancel",
+    manejarCancelacion
+  );
+
+  // Activamos la clase que define
+  // la transición de salida.
+
   fila.classList.add("saliendo");
+
+  // =====================================
+  // RESPALDO POR AUSENCIA DE EVENTO
+  // =====================================
+
+  const duracion = obtenerDuracionOpacidad(
+    fila
+  );
+
+  // Si no existe una transición efectiva,
+  // no tiene sentido esperar un evento.
+
+  if (duracion <= 0) {
+    finalizar();
+    return;
+  }
+
+  // Margen adicional para permitir
+  // que el navegador emita transitionend.
+  //
+  // Este respaldo evita que la fila permanezca
+  // indefinidamente en el DOM.
+
+  temporizador = window.setTimeout(
+    finalizar,
+    duracion + 150
+  );
 }

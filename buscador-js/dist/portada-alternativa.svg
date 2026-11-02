@@ -1,0 +1,52 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="240"
+  height="320"
+  viewBox="0 0 240 320"
+>
+  <rect
+    width="240"
+    height="320"
+    fill="#e6efed"
+  />
+
+  <rect
+    x="54"
+    y="52"
+    width="132"
+    height="172"
+    rx="10"
+    fill="#205b63"
+  />
+
+  <path
+    d="M120 78 V198"
+    stroke="#ffffff"
+    stroke-width="4"
+  />
+
+  <path
+    d="M76 94 Q98 84 120 94"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="4"
+  />
+
+  <path
+    d="M120 94 Q142 84 164 94"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="4"
+  />
+
+  <text
+    x="120"
+    y="267"
+    font-size="17"
+    font-family="Arial, sans-serif"
+    text-anchor="middle"
+    fill="#205b63"
+  >
+    Sin portada
+  </text>
+</svg>

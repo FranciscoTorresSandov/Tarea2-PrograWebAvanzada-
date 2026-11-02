@@ -1,17 +1,20 @@
+
 // =========================================
 // MÓDULO: VALIDACIÓN DE FORMULARIOS
+//
 // Responsabilidades:
-// - Aplicar restricciones dinámicas.
-// - Utilizar la Constraint Validation API.
-// - Mostrar errores junto a los campos.
-// - Validar campos agregados posteriormente.
+// - Validación HTML5 y JavaScript.
+// - Constraint Validation API.
+// - Reglas de fechas y año.
+// - Mensajes personalizados por campo.
+// - Validación de campos dinámicos.
 // =========================================
 
 /**
- * Devuelve la fecha local en formato YYYY-MM-DD.
+ * Obtiene la fecha local en formato YYYY-MM-DD.
  *
- * No usamos toISOString() porque trabaja en UTC
- * y podría producir una fecha distinta de la local.
+ * Evitamos toISOString() porque devuelve
+ * fechas UTC y podría cambiar el día local.
  */
 function obtenerFechaLocal() {
   const hoy = new Date();
@@ -30,34 +33,89 @@ function obtenerFechaLocal() {
 }
 
 /**
- * Configura los límites que cambian con el tiempo.
+ * Valida texto obligatorio después de eliminar
+ * espacios iniciales y finales.
+ *
+ * Es una función pura: no necesita el DOM.
+ * También podremos probarla con node:test.
+ *
+ * @param {string} valor
+ * @param {number} minimo
+ * @param {number} maximo
+ * @returns {string} Mensaje de error o cadena vacía.
  */
-function actualizarLimites(formulario) {
-  const anio = formulario.querySelector(
-    "#anio-publicacion"
-  );
+export function obtenerErrorTexto(
+  valor,
+  minimo = 0,
+  maximo = Infinity
+) {
+  const texto = String(valor ?? "").trim();
 
-  const fecha = formulario.querySelector(
-    "#fecha-sesion"
-  );
+  if (texto.length === 0) {
+    return "Este campo es obligatorio.";
+  }
 
-  anio.max = String(
-    new Date().getFullYear()
-  );
+  if (minimo > 0 && texto.length < minimo) {
+    return `Debes escribir al menos ${minimo} caracteres sin contar espacios exteriores.`;
+  }
 
-  fecha.min = obtenerFechaLocal();
+  if (
+    Number.isFinite(maximo) &&
+    texto.length > maximo
+  ) {
+    return `Se permiten como máximo ${maximo} caracteres.`;
+  }
+
+  return "";
 }
 
 /**
- * Establece reglas personalizadas.
+ * Actualiza los límites dependientes
+ * de la fecha actual.
+ */
+function actualizarLimites(formulario) {
+  const campoAnio = formulario.querySelector(
+    "#anio-publicacion"
+  );
+
+  const campoFecha = formulario.querySelector(
+    "#fecha-sesion"
+  );
+
+  campoAnio.max = String(
+    new Date().getFullYear()
+  );
+
+  campoFecha.min = obtenerFechaLocal();
+}
+
+/**
+ * Determina si un control utiliza
+ * validación de texto obligatorio.
+ */
+function esCampoTexto(campo) {
+  return (
+    campo.required &&
+    (
+      campo.type === "text" ||
+      campo.tagName === "TEXTAREA"
+    )
+  );
+}
+
+/**
+ * Aplica las restricciones personalizadas.
  *
- * setCustomValidity("") es imprescindible:
- * elimina un error personalizado anterior.
+ * Se limpia primero cualquier error anterior.
+ * Esto permite que un campo corregido
+ * vuelva a considerarse válido.
  */
 function aplicarReglasPersonalizadas(campo) {
-  if (campo.id === "anio-publicacion") {
-    campo.setCustomValidity("");
+  campo.setCustomValidity("");
 
+  // Año de publicación.
+
+  if (campo.id === "anio-publicacion") {
     const anioActual = new Date().getFullYear();
 
     if (
@@ -68,34 +126,84 @@ function aplicarReglasPersonalizadas(campo) {
         "El año de publicación no puede ser futuro."
       );
     }
+
+    return;
   }
 
+  // Fecha de sesión.
+
   if (campo.id === "fecha-sesion") {
-    campo.setCustomValidity("");
+    const fechaActual = obtenerFechaLocal();
 
     if (
       campo.value !== "" &&
-      campo.value < obtenerFechaLocal()
+      campo.value < fechaActual
     ) {
       campo.setCustomValidity(
         "La sesión no puede programarse en una fecha pasada."
       );
     }
+
+    return;
+  }
+
+  // Campos de texto obligatorios.
+
+  if (esCampoTexto(campo)) {
+    const minimo = Number(
+      campo.getAttribute("minlength") ?? 0
+    );
+
+    const maximoAtributo =
+      campo.getAttribute("maxlength");
+
+    const maximo =
+      maximoAtributo === null
+        ? Infinity
+        : Number(maximoAtributo);
+
+    // Dejamos que HTML5 gestione valueMissing
+    // cuando el valor está completamente vacío.
+
+    if (campo.value === "") {
+      return;
+    }
+
+    const error = obtenerErrorTexto(
+      campo.value,
+      minimo,
+      maximo
+    );
+
+    if (error) {
+      campo.setCustomValidity(error);
+    }
   }
 }
 
 /**
- * Traduce las restricciones HTML5
- * a mensajes más comprensibles.
+ * Devuelve el mensaje correspondiente
+ * a la restricción incumplida.
  */
 function obtenerMensajeError(campo) {
   const validez = campo.validity;
+
+  // Los mensajes personalizados tienen
+  // prioridad para año, fecha y texto.
+
+  if (validez.customError) {
+    return campo.validationMessage;
+  }
 
   if (validez.valueMissing) {
     return "Este campo es obligatorio.";
   }
 
   if (validez.typeMismatch) {
+    if (campo.type === "email") {
+      return "Introduce un correo electrónico válido.";
+    }
+
     return "Introduce un valor con el formato correcto.";
   }
 
@@ -112,7 +220,7 @@ function obtenerMensajeError(campo) {
   }
 
   if (validez.stepMismatch) {
-    return "Introduce un valor entero permitido.";
+    return "Introduce un número entero permitido.";
   }
 
   if (validez.tooShort) {
@@ -124,51 +232,59 @@ function obtenerMensajeError(campo) {
   }
 
   if (validez.patternMismatch) {
-    return "El valor no cumple el formato requerido.";
-  }
-
-  if (validez.customError) {
-    return campo.validationMessage;
+    return "Introduce un texto válido que contenga caracteres distintos de espacios.";
   }
 
   return "Revisa el valor introducido.";
 }
 
 /**
- * Crea el espacio del mensaje de error
- * si todavía no existe.
- *
- * Los campos nuevos también utilizarán
- * esta misma función.
+ * Obtiene o crea un elemento para mostrar
+ * el error inmediatamente después del campo.
  */
 function obtenerContenedorError(campo) {
   const idError = `${campo.id}-error`;
 
-  let error = document.getElementById(idError);
+  let contenedor = document.getElementById(
+    idError
+  );
 
-  if (!error) {
-    error = document.createElement("div");
+  if (!contenedor) {
+    contenedor = document.createElement("div");
 
-    error.id = idError;
-    error.className = "invalid-feedback";
+    contenedor.id = idError;
+    contenedor.className = "invalid-feedback";
 
     campo.insertAdjacentElement(
       "afterend",
-      error
+      contenedor
     );
+  }
+
+  // Conservamos otras descripciones accesibles
+  // que pudiera tener el campo.
+
+  const descripciones = (
+    campo.getAttribute("aria-describedby") ?? ""
+  )
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (!descripciones.includes(idError)) {
+    descripciones.push(idError);
   }
 
   campo.setAttribute(
     "aria-describedby",
-    idError
+    descripciones.join(" ")
   );
 
-  return error;
+  return contenedor;
 }
 
 /**
- * Actualiza las clases CSS y el mensaje
- * utilizando la validez actual del campo.
+ * Aplica las clases de Bootstrap y
+ * actualiza el mensaje del campo.
  */
 function mostrarResultadoValidacion(campo) {
   const valido = campo.validity.valid;
@@ -188,9 +304,13 @@ function mostrarResultadoValidacion(campo) {
 
   if (valido) {
     campo.removeAttribute("aria-invalid");
+
     contenedorError.textContent = "";
   } else {
-    campo.setAttribute("aria-invalid", "true");
+    campo.setAttribute(
+      "aria-invalid",
+      "true"
+    );
 
     contenedorError.textContent =
       obtenerMensajeError(campo);
@@ -200,7 +320,7 @@ function mostrarResultadoValidacion(campo) {
 }
 
 /**
- * Valida un campo individual.
+ * Valida un control individual.
  */
 export function validarCampo(campo) {
   aplicarReglasPersonalizadas(campo);
@@ -209,10 +329,9 @@ export function validarCampo(campo) {
 }
 
 /**
- * Valida todos los controles del formulario.
+ * Valida todos los campos del formulario.
  *
- * Devuelve true solamente cuando
- * todos los campos son válidos.
+ * Devuelve false si alguno no es válido.
  */
 export function validarFormulario(formulario) {
   actualizarLimites(formulario);
@@ -235,9 +354,9 @@ export function validarFormulario(formulario) {
 }
 
 /**
- * Elimina los mensajes y clases de validación.
+ * Elimina mensajes y clases de validación.
  *
- * Será útil después de un envío exitoso.
+ * Se utiliza después de un envío exitoso.
  */
 export function limpiarValidacion(formulario) {
   const campos = formulario.querySelectorAll(
@@ -265,14 +384,16 @@ export function limpiarValidacion(formulario) {
 }
 
 /**
- * Registra listeners en el formulario.
+ * Registra los eventos de validación.
  *
- * La delegación de input y change permite
- * validar también los campos creados
- * dinámicamente en el commit 07.
+ * Los listeners se colocan en el formulario
+ * para atender también campos creados
+ * dinámicamente en tiempo de ejecución.
  */
 export function inicializarValidacion(formulario) {
   actualizarLimites(formulario);
+
+  // Validación mientras el usuario escribe.
 
   formulario.addEventListener(
     "input",
@@ -286,6 +407,8 @@ export function inicializarValidacion(formulario) {
       }
     }
   );
+
+  // Validación al confirmar cambios.
 
   formulario.addEventListener(
     "change",
@@ -301,22 +424,23 @@ export function inicializarValidacion(formulario) {
     }
   );
 
-  // El evento invalid no se propaga mediante
-  // bubbling, pero sí puede capturarse.
-  //
-  // Esto permite mostrar errores incluso
-  // cuando HTML5 bloquea el evento submit.
+  // El evento invalid no hace bubbling.
+  // Se captura desde el formulario.
 
   formulario.addEventListener(
     "invalid",
     (evento) => {
-      mostrarResultadoValidacion(evento.target);
+      validarCampo(evento.target);
     },
     true
   );
 
+  // Refrescamos límites al volver al formulario.
+
   formulario.addEventListener(
     "focusin",
-    () => actualizarLimites(formulario)
+    () => {
+      actualizarLimites(formulario);
+    }
   );
 }

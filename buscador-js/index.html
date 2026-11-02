@@ -1,7 +1,6 @@
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
 
@@ -10,31 +9,22 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <meta
-    name="description"
-    content="Estantería Común: buscador de libros y gestión de lecturas para un club comunitario."
-  >
-
   <title>Estantería Común | Club de lectura</title>
 
-  <!--
-    Estilos compilados desde Sass.
-    Bootstrap está integrado en main.css.
-  -->
+  <!-- Bootstrap personalizado y estilos compilados desde Sass. -->
   <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
 
-  <!-- =====================================
-       BARRA DE NAVEGACIÓN
-       ===================================== -->
+  <!-- ===================================== -->
+  <!-- BARRA DE NAVEGACIÓN                   -->
+  <!-- ===================================== -->
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-
+  <nav class="navbar navbar-expand-lg bg-white border-bottom">
     <div class="container">
 
-      <a class="navbar-brand fw-bold" href="#">
+      <a class="navbar-brand fw-bold" href="#inicio">
         Estantería Común
       </a>
 
@@ -45,7 +35,7 @@
         data-bs-target="#menu-principal"
         aria-controls="menu-principal"
         aria-expanded="false"
-        aria-label="Mostrar navegación"
+        aria-label="Mostrar menú de navegación"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -54,7 +44,6 @@
         class="collapse navbar-collapse"
         id="menu-principal"
       >
-
         <ul class="navbar-nav ms-auto">
 
           <li class="nav-item">
@@ -76,105 +65,65 @@
           </li>
 
         </ul>
-
       </div>
 
     </div>
-
   </nav>
 
+  <main id="inicio" class="container py-4">
 
-  <!-- =====================================
-       ENCABEZADO PRINCIPAL
-       ===================================== -->
+    <!-- ===================================== -->
+    <!-- ENCABEZADO PRINCIPAL                 -->
+    <!-- ===================================== -->
 
-  <header class="py-5 bg-light">
+    <header class="cabecera-club mb-4">
 
-    <div class="container">
+      <h1>Estantería Común</h1>
 
-      <h1 class="display-5 fw-bold">
-        Estantería Común
-      </h1>
-
-      <p class="lead text-secondary mb-0">
-        Descubre nuevos libros, organiza tus lecturas
-        y comparte propuestas con nuestro club.
+      <p class="lead mb-0">
+        Explora libros, organiza tus lecturas
+        y comparte propuestas con el club.
       </p>
 
-    </div>
+    </header>
 
-  </header>
-
-
-  <main class="container py-4">
-
-    <!-- =====================================
-         ALERTAS GENERALES
-         ===================================== -->
-
-    <div
-      id="aviso-general"
-      class="alert alert-info d-none"
-      role="alert"
-      aria-live="polite"
-    ></div>
-
-
-    <!-- =====================================
-         SECCIÓN 1: BUSCADOR DE LIBROS
-         ===================================== -->
+    <!-- ===================================== -->
+    <!-- BUSCADOR DE LIBROS                    -->
+    <!-- ===================================== -->
 
     <section
       id="buscador"
-      class="mb-5"
+      class="seccion-biblioteca"
       aria-labelledby="titulo-buscador"
     >
 
-      <div class="mb-4">
+      <h2 id="titulo-buscador">Buscar libros</h2>
 
-        <h2 id="titulo-buscador">
-          Buscar libros
-        </h2>
+      <p>
+        Escribe un título o el nombre de un autor
+        para consultar el catálogo de Open Library.
+      </p>
 
-        <p class="text-secondary">
-          Consulta el catálogo de Open Library
-          buscando por título o autor.
-        </p>
-
-      </div>
-
-
-      <!-- Formulario de búsqueda -->
-
-      <form
-        id="form-busqueda"
-        class="row g-3 align-items-end"
-      >
+      <form id="form-busqueda" class="row g-3">
 
         <div class="col-12 col-md-9">
 
-          <label
-            for="texto-busqueda"
-            class="form-label"
-          >
+          <label for="texto-busqueda" class="form-label">
             Título o autor
           </label>
 
           <input
+            type="search"
             id="texto-busqueda"
             name="busqueda"
-            type="search"
             class="form-control"
-            placeholder="Ejemplo: Gabriel García Márquez"
-            minlength="2"
-            maxlength="120"
+            placeholder="Ejemplo: Tolkien"
             required
           >
 
         </div>
 
-
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 d-flex align-items-end">
 
           <button
             id="btn-buscar"
@@ -188,77 +137,63 @@
 
       </form>
 
-
-      <!-- Estado de la búsqueda -->
-
-      <p
+      <div
         id="estado-busqueda"
-        class="text-secondary mt-3"
+        class="alert alert-secondary mt-4"
         role="status"
         aria-live="polite"
-      ></p>
+      >
+        Realiza una búsqueda para mostrar libros.
+      </div>
 
-
-      <!--
-        Las tarjetas se generan dinámicamente
-        desde render.js utilizando métodos del DOM.
-      -->
+      <!-- Tarjetas creadas mediante métodos del DOM. -->
 
       <div
         id="resultados"
-        class="catalogo-grid mt-4"
-        aria-live="polite"
+        class="catalogo-grid"
+        aria-label="Resultados de búsqueda"
       ></div>
 
     </section>
 
-
-    <!-- =====================================
-         SECCIÓN 2: LISTA DE LECTURAS
-         ===================================== -->
+    <!-- ===================================== -->
+    <!-- LISTA DE LECTURAS                     -->
+    <!-- ===================================== -->
 
     <section
       id="lecturas"
-      class="mb-5"
+      class="seccion-biblioteca"
       aria-labelledby="titulo-lecturas"
     >
 
-      <div class="mb-4">
+      <h2 id="titulo-lecturas">Mi lista de lecturas</h2>
 
-        <h2 id="titulo-lecturas">
-          Mi lista de lecturas
-        </h2>
+      <p>
+        Organiza los libros utilizando los estados:
+        Pendiente, Leyendo y Leído.
+      </p>
 
-        <p class="text-secondary">
-          Organiza los libros que deseas leer,
-          estás leyendo o ya terminaste.
-        </p>
-
+      <div
+        id="aviso-general"
+        class="alert alert-info"
+        role="status"
+        aria-live="polite"
+      >
+        Los libros que agregues aparecerán en esta sección.
       </div>
-
 
       <div class="table-responsive">
 
-        <table
-          class="table table-striped table-hover align-middle"
-        >
+        <table class="table table-hover align-middle">
 
           <thead class="table-light">
-
             <tr>
               <th scope="col">Libro</th>
-              <th scope="col">Autor</th>
+              <th scope="col">Autores</th>
               <th scope="col">Estado</th>
               <th scope="col">Acciones</th>
             </tr>
-
           </thead>
-
-
-          <!--
-            El contenido se administra desde
-            los módulos JavaScript de lecturas.
-          -->
 
           <tbody id="tabla-lecturas"></tbody>
 
@@ -266,468 +201,280 @@
 
       </div>
 
-
-      <p
-        id="lecturas-vacias"
-        class="text-secondary"
-      >
-        Todavía no has agregado libros a tu lista.
+      <p id="lecturas-vacias" class="text-secondary">
+        Todavía no has agregado libros.
       </p>
 
     </section>
 
-
-    <!-- =====================================
-         SECCIÓN 3: PROPUESTA DE LECTURA
-         COMMIT 6 + COMMIT 7
-         ===================================== -->
+    <!-- ===================================== -->
+    <!-- FORMULARIO DE PROPUESTA DE LECTURA    -->
+    <!-- ===================================== -->
 
     <section
       id="propuestas"
-      class="mb-5"
+      class="seccion-biblioteca"
       aria-labelledby="titulo-propuestas"
     >
 
-      <div class="mb-4">
+      <h2 id="titulo-propuestas">
+        Proponer un libro
+      </h2>
 
-        <h2 id="titulo-propuestas">
-          Proponer un libro
-        </h2>
+      <p>
+        Completa la información para sugerir
+        una lectura al club.
+      </p>
 
-        <p class="text-secondary">
-          Completa el formulario para proponer
-          una lectura para la próxima sesión del club.
-        </p>
+      <form
+        id="form-propuesta"
+        class="row g-3"
+      >
 
-      </div>
+        <!-- TÍTULO -->
 
+        <div class="col-12">
 
-      <div class="card shadow-sm">
+          <label for="titulo-propuesto" class="form-label">
+            Título del libro
+          </label>
 
-        <div class="card-body p-4">
-
-
-          <!--
-            COMMIT 6:
-            Validación HTML5 y Constraint Validation API.
-
-            COMMIT 7:
-            Autores dinámicos y envío asincrónico
-            mediante fetch a JSONPlaceholder.
-          -->
-
-          <form
-            id="form-propuesta"
-            class="row g-3"
+          <input
+            type="text"
+            id="titulo-propuesto"
+            name="titulo"
+            class="form-control"
+            required
+            minlength="2"
+            maxlength="150"
+            pattern=".*\S.*"
           >
 
+        </div>
 
-            <!-- =================================
-                 CAMPO: TÍTULO
-                 ================================= -->
+        <!-- AUTORES DINÁMICOS -->
 
-            <div class="col-12">
+        <div class="col-12">
 
-              <label
-                for="titulo-propuesto"
-                class="form-label"
-              >
-                Título del libro
-              </label>
+          <fieldset>
 
-              <input
-                id="titulo-propuesto"
-                name="titulo"
-                type="text"
-                class="form-control"
-                placeholder="Escribe el título del libro"
-                minlength="2"
-                maxlength="150"
-                required
-              >
+            <legend class="form-label fw-semibold fs-6">
+              Autores del libro
+            </legend>
 
-            </div>
+            <div id="contenedor-autores">
 
+              <div class="autor-item row g-2 mb-3">
 
-            <!-- =================================
-                 AUTORES DINÁMICOS
-                 COMMIT 7
-                 ================================= -->
+                <div class="col-12 col-md-9">
 
-            <div class="col-12">
+                  <label for="autor-1" class="form-label">
+                    Autor 1
+                  </label>
 
-              <label class="form-label fw-semibold">
-                Autores del libro
-              </label>
+                  <input
+                    type="text"
+                    id="autor-1"
+                    name="autores[]"
+                    class="form-control campo-autor"
+                    required
+                    minlength="2"
+                    maxlength="120"
+                    pattern=".*\S.*"
+                  >
 
+                </div>
 
-              <!--
-                Contenedor dinámico.
+                <div class="col-12 col-md-3 d-flex align-items-start">
 
-                autores.js administra los campos
-                de autor que se agregan o eliminan.
-
-                Se permite un mínimo de 1 autor
-                y un máximo de 5 autores.
-              -->
-
-              <div id="contenedor-autores">
-
-
-                <!-- Primer autor -->
-
-                <div class="autor-item row g-2 mb-3">
-
-                  <div class="col-12 col-md-9">
-
-                    <label
-                      for="autor-1"
-                      class="form-label"
-                    >
-                      Autor 1
-                    </label>
-
-                    <input
-                      type="text"
-                      id="autor-1"
-                      name="autores[]"
-                      class="form-control campo-autor"
-                      placeholder="Nombre del autor"
-                      required
-                      minlength="2"
-                      maxlength="100"
-                    >
-
-                  </div>
-
-
-                  <div class="col-12 col-md-3 d-flex align-items-end">
-
-                    <button
-                      type="button"
-                      class="btn btn-outline-danger w-100"
-                      data-accion-autor="quitar"
-                      disabled
-                    >
-                      Quitar
-                    </button>
-
-                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger w-100 mt-md-4"
+                    data-accion-autor="quitar"
+                    disabled
+                  >
+                    Quitar
+                  </button>
 
                 </div>
 
               </div>
 
-
-              <!--
-                Botón para agregar autores.
-
-                El evento es controlado
-                desde autores.js.
-              -->
-
-              <button
-                type="button"
-                id="btn-agregar-autor"
-                class="btn btn-outline-primary btn-sm mt-2"
-              >
-                + Agregar autor
-              </button>
-
-
-              <!--
-                Contador actualizado dinámicamente.
-
-                Cuando se alcanzan los cinco autores,
-                autores.js deshabilita el botón.
-              -->
-
-              <p
-                id="contador-autores"
-                class="text-secondary small mt-2"
-                aria-live="polite"
-              >
-                1 de 5 autores.
-              </p>
-
             </div>
 
-
-            <!-- =================================
-                 CAMPO: AÑO DE PUBLICACIÓN
-                 ================================= -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="anio-publicacion"
-                class="form-label"
-              >
-                Año de publicación
-              </label>
-
-              <input
-                id="anio-publicacion"
-                name="anio"
-                type="number"
-                class="form-control"
-                placeholder="Ejemplo: 2020"
-                min="1450"
-                step="1"
-                required
-              >
-
-              <div class="form-text">
-                El año no puede ser posterior al actual.
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 CAMPO: CANTIDAD DE PÁGINAS
-                 ================================= -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="cantidad-paginas"
-                class="form-label"
-              >
-                Cantidad de páginas
-              </label>
-
-              <input
-                id="cantidad-paginas"
-                name="paginas"
-                type="number"
-                class="form-control"
-                placeholder="Ejemplo: 350"
-                min="1"
-                max="5000"
-                step="1"
-                required
-              >
-
-            </div>
-
-
-            <!-- =================================
-                 CAMPO: GÉNERO
-                 ================================= -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="genero"
-                class="form-label"
-              >
-                Género literario
-              </label>
-
-              <select
-                id="genero"
-                name="genero"
-                class="form-select"
-                required
-              >
-
-                <option value="">
-                  Selecciona un género
-                </option>
-
-                <option value="fantasia">
-                  Fantasía
-                </option>
-
-                <option value="ciencia-ficcion">
-                  Ciencia ficción
-                </option>
-
-                <option value="misterio">
-                  Misterio
-                </option>
-
-                <option value="romance">
-                  Romance
-                </option>
-
-                <option value="terror">
-                  Terror
-                </option>
-
-                <option value="historia">
-                  Historia
-                </option>
-
-                <option value="biografia">
-                  Biografía
-                </option>
-
-                <option value="otro">
-                  Otro
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- =================================
-                 CAMPO: CORREO ELECTRÓNICO
-                 ================================= -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="correo-proponente"
-                class="form-label"
-              >
-                Correo electrónico
-              </label>
-
-              <input
-                id="correo-proponente"
-                name="correo"
-                type="email"
-                class="form-control"
-                placeholder="correo@ejemplo.com"
-                maxlength="254"
-                required
-              >
-
-            </div>
-
-
-            <!-- =================================
-                 CAMPO: FECHA DE SESIÓN
-                 ================================= -->
-
-            <div class="col-12">
-
-              <label
-                for="fecha-sesion"
-                class="form-label"
-              >
-                Fecha propuesta para la sesión
-              </label>
-
-              <input
-                id="fecha-sesion"
-                name="fechaSesion"
-                type="date"
-                class="form-control"
-                required
-              >
-
-              <div class="form-text">
-                La fecha no puede ser anterior al día actual.
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 CAMPO: MOTIVO DE LA PROPUESTA
-                 ================================= -->
-
-            <div class="col-12">
-
-              <label
-                for="motivo"
-                class="form-label"
-              >
-                Motivo de la propuesta
-              </label>
-
-              <textarea
-                id="motivo"
-                name="motivo"
-                class="form-control"
-                rows="5"
-                placeholder="Explica por qué deseas proponer este libro..."
-                minlength="20"
-                maxlength="1000"
-                required
-              ></textarea>
-
-              <div class="form-text">
-                Escribe al menos 20 caracteres
-                para justificar tu propuesta.
-              </div>
-
-            </div>
-
-
-            <!-- =================================
-                 ENVÍO DE PROPUESTA
-                 COMMIT 7
-                 ================================= -->
-
-            <div class="col-12">
-
-              <!--
-                El envío se gestiona desde
-                formulario.js.
-
-                El módulo valida los campos y
-                realiza la petición asincrónica
-                mediante api-propuestas.js.
-              -->
-
-              <button
-                id="btn-enviar-propuesta"
-                type="submit"
-                class="btn btn-primary"
-              >
-                Enviar propuesta
-              </button>
-
-
-              <p class="text-secondary small mt-2">
-                Verificaremos que los datos cumplan todas
-                las restricciones antes de enviarlos.
-              </p>
-
-
-              <!--
-                Contenedor para mensajes de estado.
-
-                Se utiliza para indicar:
-                - Errores de validación
-                - Envío en progreso
-                - Propuesta enviada correctamente
-                - Errores de red o del servidor
-
-                aria-live permite anunciar cambios
-                a tecnologías de asistencia.
-              -->
-
-              <div
-                id="estado-propuesta"
-                class="alert alert-secondary mt-3"
-                role="status"
-                aria-live="polite"
-                hidden
-              ></div>
-
-            </div>
-
-
-          </form>
+            <button
+              type="button"
+              id="btn-agregar-autor"
+              class="btn btn-outline-primary"
+            >
+              + Agregar autor
+            </button>
+
+            <p
+              id="contador-autores"
+              class="small text-secondary mt-2"
+              aria-live="polite"
+            >
+              1 de 5 autores.
+            </p>
+
+          </fieldset>
 
         </div>
 
-      </div>
+        <!-- AÑO DE PUBLICACIÓN -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="anio-publicacion" class="form-label">
+            Año de publicación
+          </label>
+
+          <input
+            type="number"
+            id="anio-publicacion"
+            name="anio"
+            class="form-control"
+            min="1"
+            step="1"
+            required
+          >
+
+        </div>
+
+        <!-- CANTIDAD DE PÁGINAS -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="cantidad-paginas" class="form-label">
+            Cantidad de páginas
+          </label>
+
+          <input
+            type="number"
+            id="cantidad-paginas"
+            name="paginas"
+            class="form-control"
+            min="1"
+            step="1"
+            required
+          >
+
+        </div>
+
+        <!-- GÉNERO -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="genero" class="form-label">
+            Género literario
+          </label>
+
+          <select
+            id="genero"
+            name="genero"
+            class="form-select"
+            required
+          >
+            <option value="">Selecciona un género</option>
+            <option value="fantasia">Fantasía</option>
+            <option value="ciencia-ficcion">Ciencia ficción</option>
+            <option value="misterio">Misterio</option>
+            <option value="historia">Historia</option>
+            <option value="romance">Romance</option>
+            <option value="otro">Otro</option>
+          </select>
+
+        </div>
+
+        <!-- CORREO -->
+
+        <div class="col-12 col-md-6">
+
+          <label for="correo-proponente" class="form-label">
+            Correo electrónico
+          </label>
+
+          <input
+            type="email"
+            id="correo-proponente"
+            name="correo"
+            class="form-control"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+        <!-- FECHA PROPUESTA -->
+
+        <div class="col-12">
+
+          <label for="fecha-sesion" class="form-label">
+            Fecha propuesta para la sesión
+          </label>
+
+          <input
+            type="date"
+            id="fecha-sesion"
+            name="fechaSesion"
+            class="form-control"
+            required
+          >
+
+        </div>
+
+        <!-- MOTIVO -->
+
+        <div class="col-12">
+
+          <label for="motivo" class="form-label">
+            Motivo de la propuesta
+          </label>
+
+          <textarea
+            id="motivo"
+            name="motivo"
+            class="form-control"
+            rows="4"
+            minlength="10"
+            maxlength="1000"
+            required
+          ></textarea>
+
+        </div>
+
+        <!-- ENVÍO -->
+
+        <div class="col-12">
+
+          <button
+            id="btn-enviar-propuesta"
+            type="submit"
+            class="btn btn-primary"
+          >
+            Enviar propuesta
+          </button>
+
+          <div
+            id="estado-propuesta"
+            class="alert alert-secondary mt-3"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+
+        </div>
+
+      </form>
 
     </section>
 
   </main>
 
-
-  <!-- =====================================
-       MODAL: DETALLES DEL LIBRO
-       ===================================== -->
+  <!-- ===================================== -->
+  <!-- MODAL DE DETALLES                     -->
+  <!-- ===================================== -->
 
   <div
     class="modal fade"
@@ -759,42 +506,32 @@
 
         </div>
 
-
         <div class="modal-body">
 
-          <div class="row g-3">
+          <div class="text-center mb-3">
 
-            <div class="col-12 col-sm-4">
-
-              <img
-                id="detalle-portada"
-                class="img-fluid rounded"
-                alt="Portada del libro seleccionado"
-              >
-
-            </div>
-
-
-            <div class="col-12 col-sm-8">
-
-              <h3 class="h6">
-                Autores
-              </h3>
-
-              <p id="detalle-autores"></p>
-
-              <h3 class="h6">
-                Primera publicación
-              </h3>
-
-              <p id="detalle-anio"></p>
-
-            </div>
+            <img
+              id="detalle-portada"
+              src="/portada-alternativa.svg"
+              class="img-fluid"
+              alt="Portada del libro seleccionado"
+              width="160"
+              height="220"
+            >
 
           </div>
 
-        </div>
+          <p>
+            <strong>Autores:</strong>
+            <span id="detalle-autores">-</span>
+          </p>
 
+          <p>
+            <strong>Primera publicación:</strong>
+            <span id="detalle-anio">-</span>
+          </p>
+
+        </div>
 
         <div class="modal-footer">
 
@@ -814,66 +551,14 @@
 
   </div>
 
-
-  <!-- =====================================
-       PIE DE PÁGINA
-       ===================================== -->
-
-  <footer class="bg-light border-top py-4">
-
-    <div class="container text-center">
-
-      <p class="text-secondary small mb-0">
-        Estantería Común — Club de lectura comunitario
-      </p>
-
+  <footer class="border-top py-4 mt-4">
+    <div class="container text-center text-secondary">
+      Estantería Común — Programación Web Avanzada
     </div>
-
   </footer>
 
-
-  <!-- =====================================
-       MÓDULO PRINCIPAL
-       ===================================== -->
-
-  <!--
-    main.js es el punto de entrada de la aplicación.
-
-    Los módulos de la aplicación incluyen:
-
-    - api.js
-      Comunicación con Open Library.
-
-    - render.js
-      Generación de tarjetas mediante DOM.
-
-    - lecturas.js
-      Gestión de la lista de lecturas.
-
-    - estado-lecturas.js
-      Administración de estados de lectura.
-
-    - validacion.js
-      Restricciones y mensajes personalizados.
-
-    - formulario.js
-      Validación y envío del formulario.
-
-    - autores.js
-      Gestión dinámica de autores.
-
-    - api-propuestas.js
-      POST asincrónico a JSONPlaceholder.
-
-    Los módulos deben importarse desde
-    los archivos JavaScript correspondientes.
-  -->
-
-  <script
-    type="module"
-    src="./js/main.js"
-  ></script>
+  <!-- Punto de entrada de los módulos ES. -->
+  <script type="module" src="./js/main.js"></script>
 
 </body>
-
 </html>

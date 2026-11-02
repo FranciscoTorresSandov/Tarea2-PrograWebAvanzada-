@@ -1,25 +1,26 @@
+
 // =========================================
 // MÓDULO: AUTORES DINÁMICOS
+//
 // Responsabilidades:
-// - Crear campos de autor.
+// - Agregar campos de autor.
 // - Eliminar campos.
-// - Respetar mínimo 1 y máximo 5.
-// - Mantener identificadores únicos.
+// - Respetar los límites 1 a 5.
+// - Mantener IDs únicos.
+// - Mantener etiquetas consecutivas.
+// - Recuperar todos los autores.
 // =========================================
 
 const MIN_AUTORES = 1;
 const MAX_AUTORES = 5;
 
-// Contador independiente de la cantidad
-// actual de autores.
-//
-// Así evitamos repetir identificadores
-// cuando el usuario elimina y agrega campos.
+// Este identificador sigue aumentando.
+// No depende de la posición del campo.
 
 let siguienteId = 2;
 
 /**
- * Devuelve el número actual de autores.
+ * Cuenta los controles de autor existentes.
  */
 function contarAutores(contenedor) {
   return contenedor.querySelectorAll(
@@ -28,39 +29,59 @@ function contarAutores(contenedor) {
 }
 
 /**
- * Crea un campo de autor con su etiqueta
- * y botón de eliminación.
+ * Renumera las etiquetas visibles.
+ *
+ * No modifica los identificadores HTML,
+ * por lo que no genera IDs duplicados.
+ */
+function renumerarEtiquetas(contenedor) {
+  const filas = contenedor.querySelectorAll(
+    ".autor-item"
+  );
+
+  filas.forEach((fila, indice) => {
+    const etiqueta = fila.querySelector("label");
+
+    if (etiqueta) {
+      etiqueta.textContent = `Autor ${indice + 1}`;
+    }
+  });
+}
+
+/**
+ * Crea una fila completa con un campo
+ * y un botón de eliminación.
  */
 function crearCampoAutor() {
   const id = `autor-${siguienteId}`;
 
-  const numero = siguienteId;
-
   siguienteId++;
 
-  // Contenedor general de la fila.
+  // Fila principal.
 
   const fila = document.createElement("div");
 
-  fila.className =
-    "autor-item row g-2 mb-3";
+  fila.className = "autor-item row g-2 mb-3";
 
   // Columna del campo.
 
-  const columnaCampo = document.createElement("div");
+  const columnaCampo = document.createElement(
+    "div"
+  );
 
-  columnaCampo.className =
-    "col-12 col-md-9";
+  columnaCampo.className = "col-12 col-md-9";
 
-  // Etiqueta accesible.
+  // Etiqueta asociada al campo.
 
-  const etiqueta = document.createElement("label");
+  const etiqueta = document.createElement(
+    "label"
+  );
 
   etiqueta.className = "form-label";
   etiqueta.htmlFor = id;
-  etiqueta.textContent = `Autor ${numero}`;
+  etiqueta.textContent = "Autor";
 
-  // Campo de texto.
+  // Control obligatorio.
 
   const input = document.createElement("input");
 
@@ -75,6 +96,11 @@ function crearCampoAutor() {
   input.minLength = 2;
   input.maxLength = 120;
 
+  // Misma restricción del autor original.
+  // Requiere al menos un carácter no blanco.
+
+  input.pattern = ".*\\S.*";
+
   columnaCampo.append(
     etiqueta,
     input
@@ -82,22 +108,27 @@ function crearCampoAutor() {
 
   // Columna del botón.
 
-  const columnaBoton = document.createElement("div");
+  const columnaBoton = document.createElement(
+    "div"
+  );
 
   columnaBoton.className =
     "col-12 col-md-3 d-flex align-items-start";
 
-  const boton = document.createElement("button");
+  const botonEliminar = document.createElement(
+    "button"
+  );
 
-  boton.type = "button";
+  botonEliminar.type = "button";
 
-  boton.className =
+  botonEliminar.className =
     "btn btn-outline-danger w-100 mt-md-4";
 
-  boton.dataset.accionAutor = "quitar";
-  boton.textContent = "Quitar";
+  botonEliminar.dataset.accionAutor = "quitar";
 
-  columnaBoton.append(boton);
+  botonEliminar.textContent = "Quitar";
+
+  columnaBoton.append(botonEliminar);
 
   fila.append(
     columnaCampo,
@@ -108,14 +139,14 @@ function crearCampoAutor() {
 }
 
 /**
- * Actualiza botones y contador visual.
+ * Actualiza la disponibilidad de los botones
+ * y el contador de autores.
  */
 function actualizarControles(
   contenedor,
   botonAgregar,
   contador
 ) {
-
   const cantidad = contarAutores(contenedor);
 
   botonAgregar.disabled =
@@ -131,23 +162,31 @@ function actualizarControles(
       cantidad <= MIN_AUTORES;
   });
 
+  renumerarEtiquetas(contenedor);
+
   contador.textContent =
     `${cantidad} de ${MAX_AUTORES} autores.`;
 }
 
 /**
- * Recupera los autores introducidos.
+ * Recupera todos los autores.
+ *
+ * El orden se corresponde con los campos
+ * actualmente visibles en el formulario.
  */
 export function obtenerAutores(formulario) {
   return Array.from(
-    formulario.querySelectorAll(".campo-autor")
+    formulario.querySelectorAll(
+      ".campo-autor"
+    )
   ).map(
     campo => campo.value.trim()
   );
 }
 
 /**
- * Deja un único campo después de un envío.
+ * Restablece un único campo después
+ * de completar una propuesta.
  */
 export function reiniciarAutores() {
   const contenedor = document.querySelector(
@@ -163,14 +202,26 @@ export function reiniciarAutores() {
   );
 
   const filas = Array.from(
-    contenedor.querySelectorAll(".autor-item")
+    contenedor.querySelectorAll(
+      ".autor-item"
+    )
   );
 
-  // Conservamos la primera fila existente.
+  // Dejamos solamente el primer campo
+  // que permanezca actualmente en el DOM.
 
   filas.slice(1).forEach(
     fila => fila.remove()
   );
+
+  const primerCampo = contenedor.querySelector(
+    ".campo-autor"
+  );
+
+  if (primerCampo) {
+    primerCampo.value = "";
+    primerCampo.setCustomValidity("");
+  }
 
   actualizarControles(
     contenedor,
@@ -180,7 +231,7 @@ export function reiniciarAutores() {
 }
 
 /**
- * Registra las interacciones de autores.
+ * Registra los eventos de los autores.
  */
 export function inicializarAutores() {
   const contenedor = document.querySelector(
@@ -195,12 +246,13 @@ export function inicializarAutores() {
     "#contador-autores"
   );
 
-  // Agregar un autor.
+  // =====================================
+  // AGREGAR UN AUTOR
+  // =====================================
 
   botonAgregar.addEventListener(
     "click",
     () => {
-
       if (
         contarAutores(contenedor) >= MAX_AUTORES
       ) {
@@ -217,21 +269,22 @@ export function inicializarAutores() {
         contador
       );
 
-      // Situamos el foco en el nuevo campo.
+      // Lleva el foco al campo creado.
 
       nuevaFila.querySelector("input").focus();
     }
   );
 
-  // Delegación para eliminar autores.
-  //
-  // Una sola escucha controla todos
-  // los botones existentes y futuros.
+  // =====================================
+  // QUITAR UN AUTOR
+  // =====================================
+
+  // Una única escucha permite trabajar
+  // con botones creados posteriormente.
 
   contenedor.addEventListener(
     "click",
     (evento) => {
-
       const boton = evento.target.closest(
         'button[data-accion-autor="quitar"]'
       );
@@ -265,10 +318,12 @@ export function inicializarAutores() {
         contador
       );
 
+      // Evita que el foco quede asociado
+      // a un botón que ya no existe.
+
+      botonAgregar.focus();
     }
   );
-
-  // Estado inicial.
 
   actualizarControles(
     contenedor,
